@@ -1,0 +1,12 @@
+= simple_form_for(@history) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :date
+    = f.input :team
+    = f.input :result
+    = f.input :starter
+    = f.input :location
+
+  .form-actions
+    = f.button :submit
