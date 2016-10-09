@@ -1,7 +1,7 @@
 development:
   adapter: mysql2
   encoding: utf8
-  database: english_drill_react_development
+  database: baseball_history_development
   pool: 5
   username: root
   password:
@@ -9,7 +9,7 @@ development:
 test:
   adapter: mysql2
   encoding: utf8
-  database: english_drill_react_test
+  database: baseball_history_test
   pool: 5
   username: root
   password:
@@ -17,7 +17,7 @@ test:
 production:
   adapter: pg
   encoding: utf-8
-  database: english_drill_react_production
+  database: baseball_history_production
   pool: 5
   username: root
   password:

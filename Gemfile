@@ -24,6 +24,7 @@ gem 'compass-rails'
 gem 'zurui-sass-rails'
 gem 'roboto'
 gem 'marionette-rails'
+gem 'rails-backbone'
 gem 'lodash-rails'
 
 #--------------------------------------------------------------------------------
