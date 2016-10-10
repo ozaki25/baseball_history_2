@@ -23,9 +23,7 @@ gem 'font-awesome-rails'
 gem 'compass-rails'
 gem 'zurui-sass-rails'
 gem 'roboto'
-gem 'marionette-rails'
-gem 'rails-backbone'
-gem 'lodash-rails'
+#gem 'lodash-rails'
 
 #--------------------------------------------------------------------------------
 # View Helpers

@@ -14,10 +14,4 @@
 #= require jquery_ujs
 #= require bootstrap-sprockets
 #= require turbolinks
-#= require underscore
-#= require backbone
-#= require backbone_rails_sync
-#= require backbone_datalink
-#= require backbone/baseball_history_rails
-#= require backbone.marionette
-#= require_tree .
+#= require app
