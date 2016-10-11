@@ -1,15 +1,16 @@
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-var RootView// = require('./views/RootView.js');
+var HistoryRootView = require('./views/histories/RootView.js');
 
 var appRouter = Backbone.Marionette.AppRouter.extend({
     appRoutes: {
-        "": "root",
+        ""         : "histories",
+        "histories": "histories",
     },
     controller: {
-        root: function() {
-            app.getRegion('rootRegion').show(new RootView());
+        histories: function() {
+            app.getRegion('rootRegion').show(new HistoryRootView());
         },
     }
 });

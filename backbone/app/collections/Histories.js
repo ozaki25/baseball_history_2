@@ -1,7 +1,7 @@
 var Backbone = require('backbone');
-var User = require('../models/User');
+var History = require('../models/History');
 
 module.exports = Backbone.Collection.extend({
-    model: User,
-    url: '/users',
+    model: History,
+    url: '/histories',
 });
