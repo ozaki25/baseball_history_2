@@ -1,5 +1,14 @@
 require=(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Backbone = require('backbone');
+var History = require('../models/History');
+
+module.exports = Backbone.Collection.extend({
+    model: History,
+    url: '/histories',
+});
+
+},{"../models/History":3,"backbone":"backbone"}],2:[function(require,module,exports){
+var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
 var HistoryRootView = require('./views/histories/RootView.js');
@@ -28,47 +37,108 @@ var app = new Backbone.Marionette.Application({
 
 app.start();
 
-},{"./views/histories/RootView.js":4,"backbone":"backbone","backbone.marionette":6}],2:[function(require,module,exports){
+},{"./views/histories/RootView.js":8,"backbone":"backbone","backbone.marionette":10}],3:[function(require,module,exports){
+var Backbone = require('backbone');
+
+module.exports = Backbone.Model.extend({
+});
+
+},{"backbone":"backbone"}],4:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
 module.exports = Backbone.Marionette.ItemView.extend({
+    tagName: 'nav',
+    className: 'navbar navbar-default',
     template: _.template(
-        '<nav class="navbar navbar-default">' +
-          '<div class="container">' +
-            '<div class="navbar-header">' +
-              '<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar_links">' +
-                '<span class="icon-bar"></span>' +
-                '<span class="icon-bar"></span>' +
-                '<span class="icon-bar"></span>' +
-              '</button>' +
-              '<a href="#" class="navbar-brand">Baseball History</a>' +
-            '</div>' +
+        '<div class="container">' +
+          '<div class="navbar-header">' +
+            '<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar_links">' +
+              '<span class="icon-bar"></span>' +
+              '<span class="icon-bar"></span>' +
+              '<span class="icon-bar"></span>' +
+            '</button>' +
+            '<a href="#" class="navbar-brand">Baseball History</a>' +
           '</div>' +
-        '</nav>'
+        '</div>'
     ),
 });
 
-},{"backbone":"backbone","backbone.marionette":6,"underscore":"underscore"}],3:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],5:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
+
+module.exports = Backbone.Marionette.ItemView.extend({
+    tagName: 'tr',
+    template: _.template(
+        '<td><%- date %></td>' +
+        '<td><%- team %></td>' +
+        '<td><%- result %></td>' +
+        '<td><%- starter %></td>' +
+        '<td><%- location %></td>' +
+        '<td><a href="http://www.fighters.co.jp"></a></td>'
+    ),
+});
+
+},{"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],6:[function(require,module,exports){
+var _ = require('underscore');
+var Backbone = require('backbone');
+Backbone.Marionette = require('backbone.marionette');
+var HistoryRowView = require('./HistoryRowView');
+
+module.exports = Backbone.Marionette.CompositeView.extend({
+    tagName: 'table',
+    className: 'table',
+    template: _.template(
+        '<thead>' +
+          '<tr>' +
+            '<th>日付</th>' +
+            '<th>対戦相手</th>' +
+            '<th>勝敗</th>' +
+            '<th>先発</th>' +
+            '<th>球場</th>' +
+            '<th>リンク</th>' +
+          '</tr>' +
+        '</thead>' +
+        '<tbody id="histories_child_container" />'
+    ),
+    childView: HistoryRowView,
+    childViewContainer: '#histories_child_container',
+});
+
+},{"./HistoryRowView":5,"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],7:[function(require,module,exports){
+var _ = require('underscore');
+var Backbone = require('backbone');
+Backbone.Marionette = require('backbone.marionette');
+var IndexView = require('./IndexView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     tagName: 'div',
     className: 'container',
-    template: _.template('<h1>Baseball History</h1>'),
+    template: _.template(
+        '<div id="index_region" />'
+    ),
+    regions: {
+        indexRegion: '#index_region',
+    },
+    onRender: function() {
+        this.renderIndex()
+    },
+    renderIndex: function() {
+        this.getRegion('indexRegion').show(new IndexView({ collection: this.collection }));
+    },
 });
 
-
-},{"backbone":"backbone","backbone.marionette":6,"underscore":"underscore"}],4:[function(require,module,exports){
+},{"./IndexView":6,"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],8:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-var HeaderView   = require('../HeaderView');
-var MainView    = require('./MainView');
+var Histories  = require('../../collections/Histories');
+var HeaderView = require('../HeaderView');
+var MainView   = require('./MainView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     template: _.template(
@@ -87,11 +157,13 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('headerRegion').show(new HeaderView());
     },
     renderMain: function() {
-        this.getRegion('mainRegion').show(new MainView());
+        var histories = new Histories();
+        histories.fetch();
+        this.getRegion('mainRegion').show(new MainView({ collection: histories }));
     },
 });
 
-},{"../HeaderView":2,"./MainView":3,"backbone":"backbone","backbone.marionette":6,"underscore":"underscore"}],5:[function(require,module,exports){
+},{"../../collections/Histories":1,"../HeaderView":4,"./MainView":7,"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],9:[function(require,module,exports){
 // Backbone.BabySitter
 // -------------------
 // v0.1.11
@@ -283,7 +355,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],6:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],10:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v2.4.7
@@ -3797,7 +3869,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
   return Marionette;
 }));
 
-},{"backbone":"backbone","backbone.babysitter":5,"backbone.wreqr":7,"underscore":"underscore"}],7:[function(require,module,exports){
+},{"backbone":"backbone","backbone.babysitter":9,"backbone.wreqr":11,"underscore":"underscore"}],11:[function(require,module,exports){
 // Backbone.Wreqr (Backbone.Marionette)
 // ----------------------------------
 // v1.3.6
@@ -18135,4 +18207,4 @@ return jQuery;
   }
 }.call(this));
 
-},{}]},{},[1]);
+},{}]},{},[2]);

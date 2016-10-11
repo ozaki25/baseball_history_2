@@ -2,8 +2,9 @@ var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-var HeaderView   = require('../HeaderView');
-var MainView    = require('./MainView');
+var Histories  = require('../../collections/Histories');
+var HeaderView = require('../HeaderView');
+var MainView   = require('./MainView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     template: _.template(
@@ -22,6 +23,8 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('headerRegion').show(new HeaderView());
     },
     renderMain: function() {
-        this.getRegion('mainRegion').show(new MainView());
+        var histories = new Histories();
+        histories.fetch();
+        this.getRegion('mainRegion').show(new MainView({ collection: histories }));
     },
 });
