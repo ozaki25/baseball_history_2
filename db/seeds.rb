@@ -5,3 +5,9 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+
+History.create([
+                 { date: '2016-09-01', team: '楽天', result: 'win', starter: '増井', location: '東京ドーム' },
+                 { date: '2016-08-31', team: '楽天', result: 'lose', starter: 'メンドーサ', location: '東京ドーム' },
+                 { date: '2016-08-30', team: '楽天', result: 'lose', starter: 'バース', location: '東京ドーム' },
+               ])
