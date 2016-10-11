@@ -10,6 +10,16 @@ module.exports = Backbone.Marionette.ItemView.extend({
         '<td><%- result %></td>' +
         '<td><%- starter %></td>' +
         '<td><%- location %></td>' +
-        '<td><a href="http://www.fighters.co.jp"></a></td>'
+        '<td><a class="detail-link btn btn-link btn-xs" href="#">詳細</a></td>'
     ),
+    ui: {
+        detailLink: 'a.detail-link',
+    },
+    events: {
+        'click @ui.detailLink': 'onClickDetailLink',
+    },
+    onClickDetailLink: function(e) {
+        e.preventDefault();
+        open(this.model.getDetailUrl(), '_blank');
+    },
 });
