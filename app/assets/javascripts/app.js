@@ -11,18 +11,27 @@ module.exports = Backbone.Collection.extend({
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-var HistoryRootView = require('./views/histories/RootView.js');
+var HistoriesRootView  = require('./views/histories/index/RootView.js');
+var NewHistoryRootView = require('./views/histories/new/RootView.js');
+
+var historiesRouter = {
+    ""             : "index",
+    "histories"    : "index",
+    "histories/new": "newHistory",
+};
+
+var historiesController = {
+    index: function() {
+        app.getRegion('rootRegion').show(new HistoriesRootView());
+    },
+    newHistory: function() {
+        app.getRegion('rootRegion').show(new NewHistoryRootView());
+    },
+};
 
 var appRouter = Backbone.Marionette.AppRouter.extend({
-    appRoutes: {
-        ""         : "histories",
-        "histories": "histories",
-    },
-    controller: {
-        histories: function() {
-            app.getRegion('rootRegion').show(new HistoryRootView());
-        },
-    }
+    appRoutes: historiesRouter,
+    controller: historiesController,
 });
 
 var app = new Backbone.Marionette.Application({
@@ -37,7 +46,7 @@ var app = new Backbone.Marionette.Application({
 
 app.start();
 
-},{"./views/histories/RootView.js":8,"backbone":"backbone","backbone.marionette":10}],3:[function(require,module,exports){
+},{"./views/histories/index/RootView.js":8,"./views/histories/new/RootView.js":11,"backbone":"backbone","backbone.marionette":13}],3:[function(require,module,exports){
 var Backbone = require('backbone');
 var moment = require('moment');
 
@@ -48,7 +57,7 @@ module.exports = Backbone.Model.extend({
     },
 });
 
-},{"backbone":"backbone","moment":12}],4:[function(require,module,exports){
+},{"backbone":"backbone","moment":15}],4:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -57,20 +66,56 @@ module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'nav',
     className: 'navbar navbar-default',
     template: _.template(
-        '<div class="container">' +
-          '<div class="navbar-header">' +
-            '<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar_links">' +
-              '<span class="icon-bar"></span>' +
-              '<span class="icon-bar"></span>' +
-              '<span class="icon-bar"></span>' +
-            '</button>' +
-            '<a href="#" class="navbar-brand">Baseball History</a>' +
-          '</div>' +
-        '</div>'
+        `<div class="container">
+           <div class="navbar-header">
+             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar_links">
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+             </button>
+             <a href="#" class="navbar-brand">Baseball History</a>
+           </div>
+           <div class="collapse navbar-collapse" id="navbar_links">
+             <ul class="nav navbar-nav navbar-right">
+               <li>
+                 <a href="/#histories">Index</a>
+               </li>
+               <li>
+                 <a href="/#histories/new">New</a>
+               </li>
+             </ul>
+           </div>
+         </div>`
     ),
 });
 
-},{"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],5:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],5:[function(require,module,exports){
+var _ = require('underscore');
+var Backbone = require('backbone');
+Backbone.Marionette = require('backbone.marionette');
+var HistoryView = require('./HistoryView');
+
+module.exports = Backbone.Marionette.CompositeView.extend({
+    tagName: 'table',
+    className: 'table',
+    template: _.template(
+        `<thead>
+          <tr>
+            <th>日付</th>
+            <th>チーム</th>
+            <th>勝敗</th>
+            <th>先発</th>
+            <th>球場</th>
+            <th>リンク</th>
+          </tr>
+        </thead>
+        <tbody id="histories_child_container" />`
+    ),
+    childView: HistoryView,
+    childViewContainer: '#histories_child_container',
+});
+
+},{"./HistoryView":6,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],6:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -78,12 +123,12 @@ Backbone.Marionette = require('backbone.marionette');
 module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'tr',
     template: _.template(
-        '<td><%- date %></td>' +
-        '<td><%- team %></td>' +
-        '<td><%- result %></td>' +
-        '<td><%- starter %></td>' +
-        '<td><%- location %></td>' +
-        '<td><a class="detail-link btn btn-link btn-xs" href="#">詳細</a></td>'
+        `<td><%- date %></td>
+        <td><%- team %></td>
+        <td><%- result %></td>
+        <td><%- starter %></td>
+        <td><%- location %></td>
+        <td><a class="detail-link btn btn-link btn-xs" href="#">詳細</a></td>`
     ),
     ui: {
         detailLink: 'a.detail-link',
@@ -97,68 +142,40 @@ module.exports = Backbone.Marionette.ItemView.extend({
     },
 });
 
-},{"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],6:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],7:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
-var HistoryRowView = require('./HistoryRowView');
-
-module.exports = Backbone.Marionette.CompositeView.extend({
-    tagName: 'table',
-    className: 'table',
-    template: _.template(
-        '<thead>' +
-          '<tr>' +
-            '<th>日付</th>' +
-            '<th>対戦相手</th>' +
-            '<th>勝敗</th>' +
-            '<th>先発</th>' +
-            '<th>球場</th>' +
-            '<th>リンク</th>' +
-          '</tr>' +
-        '</thead>' +
-        '<tbody id="histories_child_container" />'
-    ),
-    childView: HistoryRowView,
-    childViewContainer: '#histories_child_container',
-});
-
-},{"./HistoryRowView":5,"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],7:[function(require,module,exports){
-var _ = require('underscore');
-var Backbone = require('backbone');
-Backbone.Marionette = require('backbone.marionette');
-var IndexView = require('./IndexView');
+var HistoriesView = require('./HistoriesView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     tagName: 'div',
     className: 'container',
-    template: _.template(
-        '<div id="index_region" />'
-    ),
+    template: _.template(`<div id="histories_region" />`),
     regions: {
-        indexRegion: '#index_region',
+        historiesRegion: '#histories_region',
     },
     onRender: function() {
-        this.renderIndex()
+        this.renderHistories()
     },
-    renderIndex: function() {
-        this.getRegion('indexRegion').show(new IndexView({ collection: this.collection }));
+    renderHistories: function() {
+        this.getRegion('historiesRegion').show(new HistoriesView({ collection: this.collection }));
     },
 });
 
-},{"./IndexView":6,"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],8:[function(require,module,exports){
+},{"./HistoriesView":5,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],8:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-var Histories  = require('../../collections/Histories');
-var HeaderView = require('../HeaderView');
+var Histories  = require('../../../collections/Histories');
+var HeaderView = require('../../HeaderView');
 var MainView   = require('./MainView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     template: _.template(
-        '<div id="header_region" />' +
-        '<div id="main_region" />'
+        `<div id="header_region" />
+        <div id="main_region" />`
     ),
     regions: {
         headerRegion  : '#header_region',
@@ -178,7 +195,41 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"../../collections/Histories":1,"../HeaderView":4,"./MainView":7,"backbone":"backbone","backbone.marionette":10,"underscore":"underscore"}],9:[function(require,module,exports){
+},{"../../../collections/Histories":1,"../../HeaderView":4,"./MainView":7,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],9:[function(require,module,exports){
+var _ = require('underscore');
+var Backbone = require('backbone');
+Backbone.Marionette = require('backbone.marionette');
+
+module.exports = Backbone.Marionette.ItemView.extend({
+    tagName: 'table',
+    className: 'table',
+    template: _.template(`<h1>histories form</h1>`),
+});
+
+},{"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],10:[function(require,module,exports){
+var _ = require('underscore');
+var Backbone = require('backbone');
+Backbone.Marionette = require('backbone.marionette');
+var FormView = require('./FormView');
+
+module.exports = Backbone.Marionette.LayoutView.extend({
+    tagName: 'div',
+    className: 'container',
+    template: _.template(`<div id="form_region" />`),
+    regions: {
+        formRegion: '#form_region',
+    },
+    onRender: function() {
+        this.renderForm()
+    },
+    renderForm: function() {
+        this.getRegion('formRegion').show(new FormView({ collection: this.collection }));
+    },
+});
+
+},{"./FormView":9,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],11:[function(require,module,exports){
+arguments[4][8][0].apply(exports,arguments)
+},{"../../../collections/Histories":1,"../../HeaderView":4,"./MainView":10,"backbone":"backbone","backbone.marionette":13,"dup":8,"underscore":"underscore"}],12:[function(require,module,exports){
 // Backbone.BabySitter
 // -------------------
 // v0.1.11
@@ -370,7 +421,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],10:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],13:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v2.4.7
@@ -3884,7 +3935,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
   return Marionette;
 }));
 
-},{"backbone":"backbone","backbone.babysitter":9,"backbone.wreqr":11,"underscore":"underscore"}],11:[function(require,module,exports){
+},{"backbone":"backbone","backbone.babysitter":12,"backbone.wreqr":14,"underscore":"underscore"}],14:[function(require,module,exports){
 // Backbone.Wreqr (Backbone.Marionette)
 // ----------------------------------
 // v1.3.6
@@ -4321,7 +4372,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],12:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],15:[function(require,module,exports){
 //! moment.js
 //! version : 2.15.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
