@@ -4,14 +4,15 @@ ruby '2.2.1'
 
 gem 'rails', '4.2.1'
 gem 'pg'
-gem 'mysql2'
+gem 'mysql2', '~> 0.3.20'
 gem 'puma'
 
 #--------------------------------------------------------------------------------
 # Basis
 #--------------------------------------------------------------------------------
-gem 'sass-rails', '~> 4.0.0'
+gem 'sass-rails' #, '~> 4.0.0'
 gem 'sprockets'
+gem 'sprockets-es6', require: 'sprockets/es6'
 gem 'uglifier', '>= 1.3.0'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'jquery-rails'
