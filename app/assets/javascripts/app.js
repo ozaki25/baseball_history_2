@@ -239,8 +239,8 @@ module.exports = Backbone.Marionette.ItemView.extend({
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
-          '<div class="col-sm-offset-2 col-sm-10">'+
-            '<button type="button" class="btn btn-default">Submit</button>' +
+          '<div class="col-xs-12 col-sm-offset-2 col-sm-2">'+
+            '<button type="button" class="btn btn-primary form-control">Submit</button>' +
           '</div>' +
         '</div>'
     ),
