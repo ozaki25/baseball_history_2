@@ -66,26 +66,26 @@ module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'nav',
     className: 'navbar navbar-default',
     template: _.template(
-        `<div class="container">
-           <div class="navbar-header">
-             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar_links">
-               <span class="icon-bar"></span>
-               <span class="icon-bar"></span>
-               <span class="icon-bar"></span>
-             </button>
-             <a href="#" class="navbar-brand">Baseball History</a>
-           </div>
-           <div class="collapse navbar-collapse" id="navbar_links">
-             <ul class="nav navbar-nav navbar-right">
-               <li>
-                 <a href="/#histories">Index</a>
-               </li>
-               <li>
-                 <a href="/#histories/new">New</a>
-               </li>
-             </ul>
-           </div>
-         </div>`
+        '<div class="container">' +
+            '<div class="navbar-header">' +
+            '<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar_links">' +
+            '<span class="icon-bar"></span>' +
+            '<span class="icon-bar"></span>' +
+            '<span class="icon-bar"></span>' +
+            '</button>' +
+            '<a href="#" class="navbar-brand">Baseball History</a>' +
+            '</div>' +
+            '<div class="collapse navbar-collapse" id="navbar_links">' +
+            '<ul class="nav navbar-nav navbar-right">' +
+            '<li>' +
+            '<a href="/#histories">Index</a>' +
+            '</li>' +
+               '<li>' +
+                 '<a href="/#histories/new">New</a>' +
+               '</li>' +
+             '</ul>' +
+           '</div>' +
+         '</div>'
     ),
 });
 
@@ -99,17 +99,17 @@ module.exports = Backbone.Marionette.CompositeView.extend({
     tagName: 'table',
     className: 'table',
     template: _.template(
-        `<thead>
-          <tr>
-            <th>日付</th>
-            <th>チーム</th>
-            <th>勝敗</th>
-            <th>先発</th>
-            <th>球場</th>
-            <th>リンク</th>
-          </tr>
-        </thead>
-        <tbody id="histories_child_container" />`
+        '<thead>' +
+          '<tr>' +
+            '<th>日付</th>' +
+            '<th>チーム</th>' +
+            '<th>勝敗</th>' +
+            '<th>先発</th>' +
+            '<th>球場</th>' +
+            '<th>リンク</th>' +
+          '</tr>' +
+        '</thead>' +
+        '<tbody id="histories_child_container" />'
     ),
     childView: HistoryView,
     childViewContainer: '#histories_child_container',
@@ -123,12 +123,12 @@ Backbone.Marionette = require('backbone.marionette');
 module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'tr',
     template: _.template(
-        `<td><%- date %></td>
-        <td><%- team %></td>
-        <td><%- result %></td>
-        <td><%- starter %></td>
-        <td><%- location %></td>
-        <td><a class="detail-link btn btn-link btn-xs" href="#">詳細</a></td>`
+        '<td><%- date %></td>' +
+        '<td><%- team %></td>' +
+        '<td><%- result %></td>' +
+        '<td><%- starter %></td>' +
+        '<td><%- location %></td>' +
+        '<td><a class="detail-link btn btn-link btn-xs" href="#">詳細</a></td>'
     ),
     ui: {
         detailLink: 'a.detail-link',
@@ -151,7 +151,7 @@ var HistoriesView = require('./HistoriesView');
 module.exports = Backbone.Marionette.LayoutView.extend({
     tagName: 'div',
     className: 'container',
-    template: _.template(`<div id="histories_region" />`),
+    template: _.template('<div id="histories_region" />'),
     regions: {
         historiesRegion: '#histories_region',
     },
@@ -174,8 +174,8 @@ var MainView   = require('./MainView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     template: _.template(
-        `<div id="header_region" />
-        <div id="main_region" />`
+        '<div id="header_region" />' +
+        '<div id="main_region" />'
     ),
     regions: {
         headerRegion  : '#header_region',
@@ -203,7 +203,7 @@ Backbone.Marionette = require('backbone.marionette');
 module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'table',
     className: 'table',
-    template: _.template(`<h1>histories form</h1>`),
+    template: _.template('<h1>histories form</h1>'),
 });
 
 },{"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],10:[function(require,module,exports){
@@ -215,7 +215,7 @@ var FormView = require('./FormView');
 module.exports = Backbone.Marionette.LayoutView.extend({
     tagName: 'div',
     className: 'container',
-    template: _.template(`<div id="form_region" />`),
+    template: _.template('<div id="form_region" />'),
     regions: {
         formRegion: '#form_region',
     },
