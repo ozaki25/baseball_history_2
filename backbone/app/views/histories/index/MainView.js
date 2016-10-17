@@ -6,7 +6,7 @@ var HistoriesView = require('./HistoriesView');
 module.exports = Backbone.Marionette.LayoutView.extend({
     tagName: 'div',
     className: 'container',
-    template: _.template(`<div id="histories_region" />`),
+    template: _.template('<div id="histories_region" />'),
     regions: {
         historiesRegion: '#histories_region',
     },

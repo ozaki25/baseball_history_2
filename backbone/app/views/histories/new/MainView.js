@@ -6,7 +6,7 @@ var FormView = require('./FormView');
 module.exports = Backbone.Marionette.LayoutView.extend({
     tagName: 'div',
     className: 'container',
-    template: _.template(`<div id="form_region" />`),
+    template: _.template('<div id="form_region" />'),
     regions: {
         formRegion: '#form_region',
     },

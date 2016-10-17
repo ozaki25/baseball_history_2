@@ -8,8 +8,8 @@ var MainView   = require('./MainView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
     template: _.template(
-        `<div id="header_region" />
-        <div id="main_region" />`
+        '<div id="header_region" />' +
+        '<div id="main_region" />'
     ),
     regions: {
         headerRegion  : '#header_region',
