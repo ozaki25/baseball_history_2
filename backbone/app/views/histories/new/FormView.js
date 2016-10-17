@@ -42,8 +42,32 @@ module.exports = Backbone.Marionette.ItemView.extend({
         '</div>' +
         '<div class="form-group">' +
           '<div class="col-xs-12 col-sm-offset-2 col-sm-2">'+
-            '<button type="button" class="btn btn-primary form-control">Submit</button>' +
+            '<button type="button" class="btn btn-primary form-control" id="submit_history">Submit</button>' +
           '</div>' +
         '</div>'
     ),
+    ui: {
+        inputDate    : '#input_date',
+        inputTeam    : '#input_team',
+        inputResult  : '#input_result',
+        inputStarter : '#input_starter',
+        inputLocation: '#input_location',
+        submitBtn    : '#submit_history',
+    },
+    events: {
+        'click @ui.submitBtn': 'onSubmit',
+    },
+    onSubmit: function(e) {
+        e.preventDefault();
+        this.collection.create({
+            date    : this.ui.inputDate.val().trim(),
+            team    : this.ui.inputTeam.val().trim(),
+            result  : this.ui.inputResult.val(),
+            starter : this.ui.inputStarter.val().trim(),
+            location: this.ui.inputLocation.val().trim(),
+        }, {
+            wait: true
+        });
+        Backbone.history.navigate('histories', { trigger: true });
+    },
 });
