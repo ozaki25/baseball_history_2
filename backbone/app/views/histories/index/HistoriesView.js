@@ -15,6 +15,7 @@ module.exports = Backbone.Marionette.CompositeView.extend({
             '<th>先発</th>' +
             '<th>球場</th>' +
             '<th>リンク</th>' +
+            '<th></th>' +
           '</tr>' +
         '</thead>' +
         '<tbody id="histories_child_container" />'
