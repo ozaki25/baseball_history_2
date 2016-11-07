@@ -15,12 +15,18 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ),
     ui: {
         detailLink: 'a.detail-link',
+        editIcon  : 'i.control-history',
     },
     events: {
         'click @ui.detailLink': 'onClickDetailLink',
+        'click @ui.editIcon'  : 'onClickEditIcon',
     },
     onClickDetailLink: function(e) {
         e.preventDefault();
         open(this.model.getDetailUrl(), '_blank');
+    },
+    onClickEditIcon: function(e) {
+        e.preventDefault();
+        this.triggerMethod('click:edit');
     },
 });

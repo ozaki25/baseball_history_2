@@ -10,10 +10,16 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     regions: {
         historiesRegion: '#histories_region',
     },
+    childEvents: {
+        'click:edit': 'onClickEdit',
+    },
     onRender: function() {
         this.renderHistories()
     },
     renderHistories: function() {
         this.getRegion('historiesRegion').show(new HistoriesView({ collection: this.collection }));
+    },
+    onClickEdit: function(view) {
+        Backbone.history.navigate('/histories/' + view.model.id + '/edit', { trigger: true });
     },
 });

@@ -11,9 +11,9 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         formRegion: '#form_region',
     },
     onRender: function() {
-        this.renderForm()
+        this.renderForm();
     },
     renderForm: function() {
-        this.getRegion('formRegion').show(new FormView({ collection: this.collection }));
+        this.getRegion('formRegion').show(new FormView({ model: this.model }));
     },
 });

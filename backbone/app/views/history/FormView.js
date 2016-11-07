@@ -9,35 +9,35 @@ module.exports = Backbone.Marionette.ItemView.extend({
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_date">Date</label>'+
           '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_date" />' +
+            '<input type="text" class="form-control input-sm" id="input_date" value="<%- date %>" />' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_team">Team</label>'+
           '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_team" />' +
+            '<input type="text" class="form-control input-sm" id="input_team" value="<%= team %>" />' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_result">Result</label>'+
           '<div class="col-sm-10">' +
             '<select class="form-control input-sm" id="input_result">' +
-              '<option>Win</option>' +
-              '<option>Lose</option>' +
-              '<option>Draw</option>' +
+              '<option <%= selected("win") %>>Win</option>' +
+              '<option <%= selected("lose") %>>Lose</option>' +
+              '<option <%= selected("draw") %>>Draw</option>' +
             '</select>' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_starter">Starter</label>'+
           '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_starter" />' +
+            '<input type="text" class="form-control input-sm" id="input_starter" value="<%- starter %>" />' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_location">Location</label>'+
           '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_location" />' +
+            '<input type="text" class="form-control input-sm" id="input_location" value="<%- location %>" />' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
@@ -46,6 +46,13 @@ module.exports = Backbone.Marionette.ItemView.extend({
           '</div>' +
         '</div>'
     ),
+    templateHelpers: function() {
+        return {
+            selected: function(result) {
+                return this.model.get('result') === result ? 'selected' : '';
+            }.bind(this),
+        }
+    },
     ui: {
         inputDate    : '#input_date',
         inputTeam    : '#input_team',
@@ -59,7 +66,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     },
     onSubmit: function(e) {
         e.preventDefault();
-        this.collection.create({
+        this.model.save({
             date    : this.ui.inputDate.val().trim(),
             team    : this.ui.inputTeam.val().trim(),
             result  : this.ui.inputResult.val(),

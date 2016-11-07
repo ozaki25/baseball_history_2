@@ -2,8 +2,8 @@ var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-var Histories  = require('../../../collections/Histories');
-var HeaderView = require('../../HeaderView');
+var Histories  = require('../../collections/Histories');
+var HeaderView = require('../HeaderView');
 var MainView   = require('./MainView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
