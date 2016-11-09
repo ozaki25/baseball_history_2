@@ -11,13 +11,14 @@ module.exports = Backbone.Collection.extend({
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-var HistoriesRootView  = require('./views/histories/index/RootView.js');
-var NewHistoryRootView = require('./views/histories/new/RootView.js');
+var HistoriesRootView = require('./views/histories/RootView.js');
+var HistoryRootView   = require('./views/history/RootView.js');
 
 var historiesRouter = {
-    ""             : "index",
-    "histories"    : "index",
-    "histories/new": "newHistory",
+    ''                  : 'index',
+    'histories'         : 'index',
+    'histories/new'     : 'newHistory',
+    'histories/:id/edit': 'edit',
 };
 
 var historiesController = {
@@ -25,7 +26,10 @@ var historiesController = {
         app.getRegion('rootRegion').show(new HistoriesRootView());
     },
     newHistory: function() {
-        app.getRegion('rootRegion').show(new NewHistoryRootView());
+        app.getRegion('rootRegion').show(new HistoryRootView());
+    },
+    edit: function(id) {
+        app.getRegion('rootRegion').show(new HistoryRootView({ historyId: id }));
     },
 };
 
@@ -46,11 +50,18 @@ var app = new Backbone.Marionette.Application({
 
 app.start();
 
-},{"./views/histories/index/RootView.js":8,"./views/histories/new/RootView.js":11,"backbone":"backbone","backbone.marionette":13}],3:[function(require,module,exports){
+},{"./views/histories/RootView.js":8,"./views/history/RootView.js":11,"backbone":"backbone","backbone.marionette":13}],3:[function(require,module,exports){
 var Backbone = require('backbone');
 var moment = require('moment');
 
 module.exports = Backbone.Model.extend({
+    defaults: {
+        date: '',
+        team: '',
+        result: '',
+        starter: '',
+        location: '',
+    },
     getDetailUrl: function() {
         var date = moment(new Date(this.get('date'))).format('YYYYMMDD')
         return 'http://www.fighters.co.jp/gamelive/result/' + date + '01/'
@@ -97,18 +108,8 @@ var HistoryView = require('./HistoryView');
 
 module.exports = Backbone.Marionette.CompositeView.extend({
     tagName: 'table',
-    className: 'table',
+    className: 'table table-hover',
     template: _.template(
-        '<thead>' +
-          '<tr>' +
-            '<th>日付</th>' +
-            '<th>チーム</th>' +
-            '<th>勝敗</th>' +
-            '<th>先発</th>' +
-            '<th>球場</th>' +
-            '<th>リンク</th>' +
-          '</tr>' +
-        '</thead>' +
         '<tbody id="histories_child_container" />'
     ),
     childView: HistoryView,
@@ -128,17 +129,24 @@ module.exports = Backbone.Marionette.ItemView.extend({
         '<td><%- result %></td>' +
         '<td><%- starter %></td>' +
         '<td><%- location %></td>' +
-        '<td><a class="detail-link btn btn-link btn-xs" href="#">詳細</a></td>'
+        '<td><a class="detail-link btn btn-link btn-xs" href="#">詳細</a></td>' +
+        '<td><button class="btn btn-default btn-xs"><i class="fa fa-wrench control-history" /></button></td>'
     ),
     ui: {
         detailLink: 'a.detail-link',
+        editIcon  : 'i.control-history',
     },
     events: {
         'click @ui.detailLink': 'onClickDetailLink',
+        'click @ui.editIcon'  : 'onClickEditIcon',
     },
     onClickDetailLink: function(e) {
         e.preventDefault();
         open(this.model.getDetailUrl(), '_blank');
+    },
+    onClickEditIcon: function(e) {
+        e.preventDefault();
+        this.triggerMethod('click:edit');
     },
 });
 
@@ -155,11 +163,17 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     regions: {
         historiesRegion: '#histories_region',
     },
+    childEvents: {
+        'click:edit': 'onClickEdit',
+    },
     onRender: function() {
         this.renderHistories()
     },
     renderHistories: function() {
         this.getRegion('historiesRegion').show(new HistoriesView({ collection: this.collection }));
+    },
+    onClickEdit: function(view) {
+        Backbone.history.navigate('/histories/' + view.model.id + '/edit', { trigger: true });
     },
 });
 
@@ -168,8 +182,8 @@ var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-var Histories  = require('../../../collections/Histories');
-var HeaderView = require('../../HeaderView');
+var Histories  = require('../../collections/Histories');
+var HeaderView = require('../HeaderView');
 var MainView   = require('./MainView');
 
 module.exports = Backbone.Marionette.LayoutView.extend({
@@ -195,7 +209,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"../../../collections/Histories":1,"../../HeaderView":4,"./MainView":7,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],9:[function(require,module,exports){
+},{"../../collections/Histories":1,"../HeaderView":4,"./MainView":7,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],9:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -204,46 +218,92 @@ module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'form',
     className: 'form-horizontal',
     template: _.template(
+        '<%= deleteBtn  %>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_date">Date</label>'+
           '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_date" />' +
+            '<input type="text" class="form-control input-sm" id="input_date" value="<%- date %>" />' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_team">Team</label>'+
           '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_team" />' +
+            '<input type="text" class="form-control input-sm" id="input_team" value="<%= team %>" />' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_result">Result</label>'+
           '<div class="col-sm-10">' +
             '<select class="form-control input-sm" id="input_result">' +
-              '<option>Win</option>' +
-              '<option>Lose</option>' +
-              '<option>Draw</option>' +
+              '<option <%= selected("win") %>>Win</option>' +
+              '<option <%= selected("lose") %>>Lose</option>' +
+              '<option <%= selected("draw") %>>Draw</option>' +
             '</select>' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_starter">Starter</label>'+
           '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_starter" />' +
+            '<input type="text" class="form-control input-sm" id="input_starter" value="<%- starter %>" />' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_location">Location</label>'+
           '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_location" />' +
+            '<input type="text" class="form-control input-sm" id="input_location" value="<%- location %>" />' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
-          '<div class="col-sm-offset-2 col-sm-10">'+
-            '<button type="button" class="btn btn-default">Submit</button>' +
+          '<div class="col-xs-12 col-sm-offset-2 col-sm-2">'+
+            '<button type="button" class="btn btn-primary form-control" id="submit_history">Submit</button>' +
           '</div>' +
         '</div>'
     ),
+    templateHelpers: function() {
+        return {
+            selected: function(result) {
+                return this.model.get('result') === result ? 'selected' : '';
+            }.bind(this),
+            deleteBtn: this.model.isNew() ? '' : '<div class="clearfix">' +
+                                                   '<button id="delete_history" class="btn btn-default btn-xs pull-right">' +
+                                                     '<i class="fa fa-trash" />' +
+                                                   '</button>' +
+                                                 '</div>'
+        }
+    },
+    ui: {
+        inputDate    : '#input_date',
+        inputTeam    : '#input_team',
+        inputResult  : '#input_result',
+        inputStarter : '#input_starter',
+        inputLocation: '#input_location',
+        submitBtn    : '#submit_history',
+        deleteBtn    : '#delete_history',
+    },
+    events: {
+        'click @ui.submitBtn': 'onClickSubmit',
+        'click @ui.deleteBtn': 'onClickDelete',
+    },
+    onClickSubmit: function(e) {
+        e.preventDefault();
+        this.model.save({
+            date    : this.ui.inputDate.val().trim(),
+            team    : this.ui.inputTeam.val().trim(),
+            result  : this.ui.inputResult.val(),
+            starter : this.ui.inputStarter.val().trim(),
+            location: this.ui.inputLocation.val().trim(),
+        }, {
+            wait: true
+        });
+        Backbone.history.navigate('histories', { trigger: true });
+    },
+    onClickDelete: function(e) {
+        e.preventDefault();
+        if(confirm('削除します')) {
+            this.model.destroy({ wait: true });
+            Backbone.history.navigate('/histories', { trigger: true });
+        }
+    },
 });
 
 },{"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],10:[function(require,module,exports){
@@ -260,16 +320,54 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         formRegion: '#form_region',
     },
     onRender: function() {
-        this.renderForm()
+        this.renderForm();
     },
     renderForm: function() {
-        this.getRegion('formRegion').show(new FormView({ collection: this.collection }));
+        this.getRegion('formRegion').show(new FormView({ model: this.model }));
     },
 });
 
 },{"./FormView":9,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],11:[function(require,module,exports){
-arguments[4][8][0].apply(exports,arguments)
-},{"../../../collections/Histories":1,"../../HeaderView":4,"./MainView":10,"backbone":"backbone","backbone.marionette":13,"dup":8,"underscore":"underscore"}],12:[function(require,module,exports){
+var _ = require('underscore');
+var Backbone = require('backbone');
+Backbone.Marionette = require('backbone.marionette');
+
+var History    = require('../../models/History');
+var Histories  = require('../../collections/Histories');
+var HeaderView = require('../HeaderView');
+var MainView   = require('./MainView');
+
+module.exports = Backbone.Marionette.LayoutView.extend({
+    template: _.template(
+        '<div id="header_region" />' +
+        '<div id="main_region" />'
+    ),
+    regions: {
+        headerRegion: '#header_region',
+        mainRegion  : '#main_region',
+    },
+    initialize: function(options) {
+        this.historyId = options.historyId;
+    },
+    onRender: function() {
+        this.renderHeader();
+        this.renderMain();
+    },
+    renderHeader: function() {
+        this.getRegion('headerRegion').show(new HeaderView());
+    },
+    renderMain: function() {
+        var history = new History({}, { collection: new Histories() });
+        if(this.historyId) history.set({ id: this.historyId });
+        history.fetch({
+            success: function() {
+                this.getRegion('mainRegion').show(new MainView({ model: history }));
+            }.bind(this),
+        });
+    },
+});
+
+},{"../../collections/Histories":1,"../../models/History":3,"../HeaderView":4,"./MainView":10,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],12:[function(require,module,exports){
 // Backbone.BabySitter
 // -------------------
 // v0.1.11

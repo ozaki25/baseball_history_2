@@ -5,18 +5,8 @@ var HistoryView = require('./HistoryView');
 
 module.exports = Backbone.Marionette.CompositeView.extend({
     tagName: 'table',
-    className: 'table',
+    className: 'table table-hover',
     template: _.template(
-        '<thead>' +
-          '<tr>' +
-            '<th>日付</th>' +
-            '<th>チーム</th>' +
-            '<th>勝敗</th>' +
-            '<th>先発</th>' +
-            '<th>球場</th>' +
-            '<th>リンク</th>' +
-          '</tr>' +
-        '</thead>' +
         '<tbody id="histories_child_container" />'
     ),
     childView: HistoryView,
