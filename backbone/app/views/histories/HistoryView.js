@@ -11,7 +11,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
         '<td><%- starter %></td>' +
         '<td><%- location %></td>' +
         '<td><a class="detail-link btn btn-link btn-xs" href="#">詳細</a></td>' +
-        '<td><i class="fa fa-wrench control-history" /></td>'
+        '<td><button class="btn btn-default btn-xs"><i class="fa fa-wrench control-history" /></button></td>'
     ),
     ui: {
         detailLink: 'a.detail-link',

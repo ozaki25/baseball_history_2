@@ -108,19 +108,8 @@ var HistoryView = require('./HistoryView');
 
 module.exports = Backbone.Marionette.CompositeView.extend({
     tagName: 'table',
-    className: 'table',
+    className: 'table table-hover',
     template: _.template(
-        '<thead>' +
-          '<tr>' +
-            '<th>日付</th>' +
-            '<th>チーム</th>' +
-            '<th>勝敗</th>' +
-            '<th>先発</th>' +
-            '<th>球場</th>' +
-            '<th>リンク</th>' +
-            '<th></th>' +
-          '</tr>' +
-        '</thead>' +
         '<tbody id="histories_child_container" />'
     ),
     childView: HistoryView,
@@ -141,7 +130,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
         '<td><%- starter %></td>' +
         '<td><%- location %></td>' +
         '<td><a class="detail-link btn btn-link btn-xs" href="#">詳細</a></td>' +
-        '<td><i class="fa fa-wrench control-history" /></td>'
+        '<td><button class="btn btn-default btn-xs"><i class="fa fa-wrench control-history" /></button></td>'
     ),
     ui: {
         detailLink: 'a.detail-link',
@@ -229,6 +218,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'form',
     className: 'form-horizontal',
     template: _.template(
+        '<%= deleteBtn  %>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_date">Date</label>'+
           '<div class="col-sm-10">' +
@@ -274,6 +264,11 @@ module.exports = Backbone.Marionette.ItemView.extend({
             selected: function(result) {
                 return this.model.get('result') === result ? 'selected' : '';
             }.bind(this),
+            deleteBtn: this.model.isNew() ? '' : '<div class="clearfix">' +
+                                                   '<button id="delete_history" class="btn btn-default btn-xs pull-right">' +
+                                                     '<i class="fa fa-trash" />' +
+                                                   '</button>' +
+                                                 '</div>'
         }
     },
     ui: {
@@ -283,11 +278,13 @@ module.exports = Backbone.Marionette.ItemView.extend({
         inputStarter : '#input_starter',
         inputLocation: '#input_location',
         submitBtn    : '#submit_history',
+        deleteBtn    : '#delete_history',
     },
     events: {
-        'click @ui.submitBtn': 'onSubmit',
+        'click @ui.submitBtn': 'onClickSubmit',
+        'click @ui.deleteBtn': 'onClickDelete',
     },
-    onSubmit: function(e) {
+    onClickSubmit: function(e) {
         e.preventDefault();
         this.model.save({
             date    : this.ui.inputDate.val().trim(),
@@ -299,6 +296,13 @@ module.exports = Backbone.Marionette.ItemView.extend({
             wait: true
         });
         Backbone.history.navigate('histories', { trigger: true });
+    },
+    onClickDelete: function(e) {
+        e.preventDefault();
+        if(confirm('削除します')) {
+            this.model.destroy({ wait: true });
+            Backbone.history.navigate('/histories', { trigger: true });
+        }
     },
 });
 

@@ -6,6 +6,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'form',
     className: 'form-horizontal',
     template: _.template(
+        '<%= deleteBtn  %>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_date">Date</label>'+
           '<div class="col-sm-10">' +
@@ -51,6 +52,11 @@ module.exports = Backbone.Marionette.ItemView.extend({
             selected: function(result) {
                 return this.model.get('result') === result ? 'selected' : '';
             }.bind(this),
+            deleteBtn: this.model.isNew() ? '' : '<div class="clearfix">' +
+                                                   '<button id="delete_history" class="btn btn-default btn-xs pull-right">' +
+                                                     '<i class="fa fa-trash" />' +
+                                                   '</button>' +
+                                                 '</div>'
         }
     },
     ui: {
@@ -60,11 +66,13 @@ module.exports = Backbone.Marionette.ItemView.extend({
         inputStarter : '#input_starter',
         inputLocation: '#input_location',
         submitBtn    : '#submit_history',
+        deleteBtn    : '#delete_history',
     },
     events: {
-        'click @ui.submitBtn': 'onSubmit',
+        'click @ui.submitBtn': 'onClickSubmit',
+        'click @ui.deleteBtn': 'onClickDelete',
     },
-    onSubmit: function(e) {
+    onClickSubmit: function(e) {
         e.preventDefault();
         this.model.save({
             date    : this.ui.inputDate.val().trim(),
@@ -76,5 +84,12 @@ module.exports = Backbone.Marionette.ItemView.extend({
             wait: true
         });
         Backbone.history.navigate('histories', { trigger: true });
+    },
+    onClickDelete: function(e) {
+        e.preventDefault();
+        if(confirm('削除します')) {
+            this.model.destroy({ wait: true });
+            Backbone.history.navigate('/histories', { trigger: true });
+        }
     },
 });
