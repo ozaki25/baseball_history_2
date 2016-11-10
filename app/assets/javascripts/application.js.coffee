@@ -13,5 +13,9 @@
 #= require jquery
 #= require jquery_ujs
 #= require bootstrap-sprockets
+#= require bootstrap-datepicker/core
+#= require bootstrap-datepicker/locales/bootstrap-datepicker.ja.js
+#= require moment
+#= require moment/ja.js
 #= require turbolinks
 #= require app
