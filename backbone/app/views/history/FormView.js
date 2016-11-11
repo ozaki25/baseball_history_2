@@ -1,3 +1,4 @@
+require('bootstrap-datepicker');
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -71,6 +72,14 @@ module.exports = Backbone.Marionette.ItemView.extend({
     events: {
         'click @ui.submitBtn': 'onClickSubmit',
         'click @ui.deleteBtn': 'onClickDelete',
+    },
+    onShow: function() {
+        this.$('#input_date').datepicker({
+            language: 'ja',
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true,
+        });
     },
     onClickSubmit: function(e) {
         e.preventDefault();
