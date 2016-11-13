@@ -66,6 +66,24 @@ module.exports = Backbone.Model.extend({
         var date = moment(new Date(this.get('date'))).format('YYYYMMDD')
         return 'http://www.fighters.co.jp/gamelive/result/' + date + '01/'
     },
+    resultMark: function() {
+        var resultMark;
+        switch (this.get('result').toLowerCase()){
+        case 'win':
+            resultMark = '○';
+            break;
+        case 'lose':
+            resultMark = '●';
+            break;
+        case 'draw':
+            resultMark = '△';
+            break;
+        default:
+            resultMark = '-';
+            break;
+        }
+        return resultMark;
+    },
 });
 
 },{"backbone":"backbone","moment":16}],4:[function(require,module,exports){
@@ -125,13 +143,17 @@ module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'tr',
     template: _.template(
         '<td><%- date %></td>' +
-        '<td><%- team %></td>' +
-        '<td><%- result %></td>' +
+        '<td><%= resultAndTeam %></td>' +
         '<td><%- starter %></td>' +
         '<td><%- location %></td>' +
         '<td><a class="detail-link btn btn-link btn-xs" href="#">詳細</a></td>' +
         '<td><button class="btn btn-default btn-xs"><i class="fa fa-wrench control-history" /></button></td>'
     ),
+    templateHelpers: function() {
+        return {
+            resultAndTeam: this.model.resultMark() + ' ' + this.model.get('team'),
+        }
+    },
     ui: {
         detailLink: 'a.detail-link',
         editIcon  : 'i.control-history',
