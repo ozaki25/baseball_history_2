@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161009145517) do
+ActiveRecord::Schema.define(version: 20161113230125) do
 
   create_table "histories", force: :cascade do |t|
     t.date     "date"
@@ -19,6 +19,14 @@ ActiveRecord::Schema.define(version: 20161009145517) do
     t.string   "result",     limit: 255
     t.string   "starter",    limit: 255
     t.string   "location",   limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string   "long_name",  limit: 255
+    t.string   "short_name", limit: 255
+    t.string   "league",     limit: 255
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
