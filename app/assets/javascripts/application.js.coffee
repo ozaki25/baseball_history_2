@@ -13,5 +13,7 @@
 #= require jquery
 #= require jquery_ujs
 #= require bootstrap-sprockets
+#= require moment
+#= require moment/ja.js
 #= require turbolinks
 #= require app

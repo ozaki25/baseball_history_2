@@ -1,33 +1,32 @@
 var _ = require('underscore');
+var moment = require('moment');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
+var SelectboxView = require('../../lib/SelectboxView');
 
-module.exports = Backbone.Marionette.ItemView.extend({
+module.exports = Backbone.Marionette.LayoutView.extend({
     tagName: 'form',
     className: 'form-horizontal',
     template: _.template(
         '<%= deleteBtn  %>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_date">Date</label>'+
-          '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_date" value="<%- date %>" />' +
+          '<div class="form-inline col-sm-10">' +
+            '<span id="select_date_year_region" class"form-group"></span>' +
+            '&nbsp;年&nbsp;' +
+            '<span id="select_date_month_region" class"form-group"></span>' +
+            '&nbsp;月&nbsp;' +
+            '<span id="select_date_day_region" class"form-group"></span>' +
+            '&nbsp;日&nbsp;' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_team">Team</label>'+
-          '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_team" value="<%= team %>" />' +
-          '</div>' +
+          '<div id="select_team_region" class="col-sm-10"></div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_result">Result</label>'+
-          '<div class="col-sm-10">' +
-            '<select class="form-control input-sm" id="input_result">' +
-              '<option <%= selected("win") %>>Win</option>' +
-              '<option <%= selected("lose") %>>Lose</option>' +
-              '<option <%= selected("draw") %>>Draw</option>' +
-            '</select>' +
-          '</div>' +
+          '<div id="select_result_region" class="col-sm-10"></div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_starter">Starter</label>'+
@@ -49,9 +48,6 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ),
     templateHelpers: function() {
         return {
-            selected: function(result) {
-                return this.model.get('result') === result ? 'selected' : '';
-            }.bind(this),
             deleteBtn: this.model.isNew() ? '' : '<div class="clearfix">' +
                                                    '<button id="delete_history" class="btn btn-default btn-xs pull-right">' +
                                                      '<i class="fa fa-trash" />' +
@@ -60,9 +56,6 @@ module.exports = Backbone.Marionette.ItemView.extend({
         }
     },
     ui: {
-        inputDate    : '#input_date',
-        inputTeam    : '#input_team',
-        inputResult  : '#input_result',
         inputStarter : '#input_starter',
         inputLocation: '#input_location',
         submitBtn    : '#submit_history',
@@ -72,12 +65,108 @@ module.exports = Backbone.Marionette.ItemView.extend({
         'click @ui.submitBtn': 'onClickSubmit',
         'click @ui.deleteBtn': 'onClickDelete',
     },
+    regions: {
+        selectYear  : '#select_date_year_region',
+        selectMonth : '#select_date_month_region',
+        selectDay   : '#select_date_day_region',
+        selectTeam  : '#select_team_region',
+        selectResult: '#select_result_region',
+    },
+    initialize: function(options) {
+        this.teams = options.teams;
+        this.date = moment(new Date(this.model.get('date') || new Date()));
+    },
+    onRender: function() {
+        this.renderSelectYear();
+        this.renderSelectMonth();
+        this.renderSelectDay();
+        this.renderSelectTeam();
+        this.renderSelectResult();
+    },
+    renderSelectYear: function() {
+        var year = moment(new Date()).year();
+        var years = new Backbone.Collection(
+            _.map(_.range(year, year - 10, -1), function(i) {
+                return { id: i, year: i };
+            })
+        );
+        var selectboxView = new SelectboxView({
+            _id: 'input_date_year',
+            _className: 'form-control input-sm',
+            collection: years,
+            label: 'year',
+            value: 'year',
+            selected: years.findWhere({ year: parseInt(this.date.format('YYYY')) }),
+        });
+        this.getRegion('selectYear').show(selectboxView);
+    },
+    renderSelectMonth: function() {
+        var months = new Backbone.Collection(
+            _.map(_.range(1, 13), function(i) {
+                return { id: i, month: i };
+            })
+        );
+        var selectboxView = new SelectboxView({
+            _id: 'input_date_month',
+            _className: 'form-control input-sm',
+            collection: months,
+            label: 'month',
+            value: 'month',
+            selected: months.findWhere({ month: parseInt(this.date.format('M')) }),
+        });
+        this.getRegion('selectMonth').show(selectboxView);
+    },
+    renderSelectDay: function() {
+        var days = new Backbone.Collection(
+            _.map(_.range(1, 32), function(i) {
+                return { id: i, day: i };
+            })
+        );
+        var selectboxView = new SelectboxView({
+            _id: 'input_date_day',
+            _className: 'form-control input-sm',
+            collection: days,
+            label: 'day',
+            value: 'day',
+            selected: days.findWhere({ day: parseInt(this.date.format('D')) }),
+        });
+        this.getRegion('selectDay').show(selectboxView);
+    },
+    renderSelectTeam: function() {
+        var selectboxView = new SelectboxView({
+            _id: 'input_team',
+            _className: 'form-control input-sm',
+            collection: this.teams,
+            label: 'short_name',
+            value: 'id',
+        });
+        this.getRegion('selectTeam').show(selectboxView);
+    },
+    renderSelectResult: function() {
+        var collection = new Backbone.Collection([
+            { label: '&#9675; 勝ち', value: 'win' },
+            { label: '&#9679; 負け', value: 'lose' },
+            { label: '&#9651; 引き分け', value: 'draw' },
+        ]);
+        var selectboxView = new SelectboxView({
+            _id: 'input_result',
+            _className: 'form-control input-sm',
+            collection: collection,
+            label: 'label',
+            value: 'value',
+        });
+        this.getRegion('selectResult').show(selectboxView);
+    },
     onClickSubmit: function(e) {
         e.preventDefault();
+        var year = this.$('#input_date_year').val();
+        var month = this.$('#input_date_month').val();
+        var day = this.$('#input_date_day').val();
+        var date = moment([year, parseInt(month - 1), day]);
         this.model.save({
-            date    : this.ui.inputDate.val().trim(),
-            team    : this.ui.inputTeam.val().trim(),
-            result  : this.ui.inputResult.val(),
+            date    : date.format('YYYY-MM-DD'),
+            team_id : this.$('#input_team').val(),
+            result  : this.$('#input_result').val(),
             starter : this.ui.inputStarter.val().trim(),
             location: this.ui.inputLocation.val().trim(),
         }, {

@@ -1,4 +1,3 @@
 json.array!(@histories) do |history|
-  json.extract! history, :id, :date, :team, :result, :starter, :location
-  json.url history_url(history, format: :json)
+  json.extract! history, :id, :date, :result, :starter, :location, :team
 end

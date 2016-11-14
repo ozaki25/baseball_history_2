@@ -10,10 +10,13 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     regions: {
         formRegion: '#form_region',
     },
+    initialize: function(options) {
+        this.teams = options.teams;
+    },
     onRender: function() {
         this.renderForm();
     },
     renderForm: function() {
-        this.getRegion('formRegion').show(new FormView({ model: this.model }));
+        this.getRegion('formRegion').show(new FormView({ model: this.model, teams: this.teams }));
     },
 });

@@ -1,1 +1,1 @@
-json.extract! @history, :id, :date, :team, :result, :starter, :location, :created_at, :updated_at
+json.extract! @history, :id, :date, :result, :starter, :location, :team_id, :created_at, :updated_at

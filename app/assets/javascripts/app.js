@@ -7,7 +7,107 @@ module.exports = Backbone.Collection.extend({
     url: '/histories',
 });
 
-},{"../models/History":3,"backbone":"backbone"}],2:[function(require,module,exports){
+},{"../models/History":5,"backbone":"backbone"}],2:[function(require,module,exports){
+var Backbone = require('backbone');
+var Team = require('../models/Team');
+
+module.exports = Backbone.Collection.extend({
+    model: Team,
+    url: '/teams',
+});
+
+},{"../models/Team":6,"backbone":"backbone"}],3:[function(require,module,exports){
+/*
+var SelectboxView = require('./SelectboxView')
+var selectboxView = new SelectboxView({
+    collection: this.collection,                  // [必須]コレクション
+    label: 'name',                                // [必須]選択肢に表示するプロパティ
+    value: 'id',                                  // [必須]valueにセットするプロパティ
+    changeEventName: 'change:user',               // 変更時に発生するイベント名 [デフォルト]change:selectbox
+    _id: 'select_user',                           // selectタグのid
+    _className: 'select-user',                    // selectタグのclass [デフォルト]form-control
+    attrs: { name: 'selectUser' },                // selectタグの属性
+    optionAttrs: { class: 'select-option' },      // optionタグの属性
+    selected: this.model,                         // デフォルトで選択済みにする項目
+    blank: true,                                  // 先頭に空のoptionを入れるかどうか
+    blankLabel: '未選択',                         // 空のoptionのラベル
+    blankValue: 'blank',                          // 空のoptionのvalue
+})
+this.getRegion('selectboxRegion').show(selectboxView);
+*/
+
+var _ = require('underscore');
+var Backbone = require('backbone');
+Backbone.Marionette = require('backbone.marionette');
+
+var SelectboxOptionView = Backbone.Marionette.ItemView.extend({
+    tagName: 'option',
+    attributes: function() {
+        var selected = this.options.selected && this.options.selected.cid == this.model.cid ? { selected: 'selected' } : {};
+        return Backbone.$.extend(this.options.attrs, selected, {
+            value: this.model.get(this.options.value),
+            'data-model-id': this.model.id,
+        });
+    },
+    template: _.template('<%= label %>'),
+    templateHelpers: function() {
+        return {
+            label: this.model.get(this.label),
+        }
+    },
+    initialize: function(options) {
+        this.label = options.label;
+    },
+});
+
+var SelectboxView = Backbone.Marionette.CollectionView.extend({
+    tagName: 'select',
+    attributes: function() {
+        return Backbone.$.extend(this.options.attrs, {
+            id: this.options._id,
+            class: this.options._className || 'form-control',
+        });
+    },
+    childView: SelectboxOptionView,
+    childViewOptions: function() {
+        return {
+            label: this.label,
+            value: this.value,
+            attrs: this.optionAttrs,
+            selected: this.selected,
+        }
+    },
+    initialize: function(options) {
+        this.label = options.label;
+        this.value = options.value;
+        this.optionAttrs = options.optionAttrs;
+        this.selected = options.selected;
+        this.blank = options.blank;
+        this.blankLabel = options.blankLabel || '';
+        this.blankValue = options.blankValue || '';
+        this.changeEventName = options.changeEventName || 'change:selectbox';
+        if(this.blank) this.appendBlankOption();
+    },
+    events: {
+        'change': 'onChange'
+    },
+    onChange: function() {
+        var id = this.$('option:selected').attr('data-model-id');
+        var value = this.$el.val();
+        var model = this.collection.findWhere({ id: id }) || this.collection.findWhere({ id: parseInt(id) });
+        this.triggerMethod(this.changeEventName, value, model);
+    },
+    appendBlankOption: function() {
+        var blankOption = Backbone.$('<option>');
+        blankOption.text(this.blankLabel);
+        blankOption.val(this.blankValue);
+        this.$el.append(blankOption);
+    },
+});
+
+module.exports = SelectboxView;
+
+},{"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],4:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
@@ -50,7 +150,7 @@ var app = new Backbone.Marionette.Application({
 
 app.start();
 
-},{"./views/histories/RootView.js":8,"./views/history/RootView.js":11,"backbone":"backbone","backbone.marionette":13}],3:[function(require,module,exports){
+},{"./views/histories/RootView.js":11,"./views/history/RootView.js":14,"backbone":"backbone","backbone.marionette":16}],5:[function(require,module,exports){
 var Backbone = require('backbone');
 var moment = require('moment');
 
@@ -63,12 +163,44 @@ module.exports = Backbone.Model.extend({
         location: '',
     },
     getDetailUrl: function() {
-        var date = moment(new Date(this.get('date'))).format('YYYYMMDD')
-        return 'http://www.fighters.co.jp/gamelive/result/' + date + '01/'
+        var date = moment(new Date(this.get('date'))).format('YYYYMMDD');
+        return 'http://www.fighters.co.jp/gamelive/result/' + date + '01/';
+    },
+    shortTeamName: function() {
+        return !!this.get('team') ? this.get('team').short_name : '';
+    },
+    resultMark: function() {
+        var resultMark;
+        switch (this.get('result').toLowerCase()) {
+        case 'win':
+            resultMark = '&#9675;';
+            break;
+        case 'lose':
+            resultMark = '&#9679;';
+            break;
+        case 'draw':
+            resultMark = '&#9651;';
+            break;
+        default:
+            resultMark = '-';
+            break;
+        }
+        return resultMark;
     },
 });
 
-},{"backbone":"backbone","moment":15}],4:[function(require,module,exports){
+},{"backbone":"backbone","moment":18}],6:[function(require,module,exports){
+var Backbone = require('backbone');
+
+module.exports = Backbone.Model.extend({
+    defaults: {
+        longName: '',
+        sortName: '',
+        league: '',
+    },
+});
+
+},{"backbone":"backbone"}],7:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -100,7 +232,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ),
 });
 
-},{"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],5:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],8:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -116,7 +248,7 @@ module.exports = Backbone.Marionette.CompositeView.extend({
     childViewContainer: '#histories_child_container',
 });
 
-},{"./HistoryView":6,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],6:[function(require,module,exports){
+},{"./HistoryView":9,"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],9:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -125,13 +257,17 @@ module.exports = Backbone.Marionette.ItemView.extend({
     tagName: 'tr',
     template: _.template(
         '<td><%- date %></td>' +
-        '<td><%- team %></td>' +
-        '<td><%- result %></td>' +
+        '<td><%= resultAndTeam %></td>' +
         '<td><%- starter %></td>' +
         '<td><%- location %></td>' +
         '<td><a class="detail-link btn btn-link btn-xs" href="#">詳細</a></td>' +
         '<td><button class="btn btn-default btn-xs"><i class="fa fa-wrench control-history" /></button></td>'
     ),
+    templateHelpers: function() {
+        return {
+            resultAndTeam: this.model.resultMark() + ' ' + this.model.shortTeamName(),
+        }
+    },
     ui: {
         detailLink: 'a.detail-link',
         editIcon  : 'i.control-history',
@@ -150,7 +286,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     },
 });
 
-},{"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],7:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],10:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -177,7 +313,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"./HistoriesView":5,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],8:[function(require,module,exports){
+},{"./HistoriesView":8,"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],11:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -209,37 +345,36 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"../../collections/Histories":1,"../HeaderView":4,"./MainView":7,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],9:[function(require,module,exports){
+},{"../../collections/Histories":1,"../HeaderView":7,"./MainView":10,"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],12:[function(require,module,exports){
 var _ = require('underscore');
+var moment = require('moment');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
+var SelectboxView = require('../../lib/SelectboxView');
 
-module.exports = Backbone.Marionette.ItemView.extend({
+module.exports = Backbone.Marionette.LayoutView.extend({
     tagName: 'form',
     className: 'form-horizontal',
     template: _.template(
         '<%= deleteBtn  %>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_date">Date</label>'+
-          '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_date" value="<%- date %>" />' +
+          '<div class="form-inline col-sm-10">' +
+            '<span id="select_date_year_region" class"form-group"></span>' +
+            '&nbsp;年&nbsp;' +
+            '<span id="select_date_month_region" class"form-group"></span>' +
+            '&nbsp;月&nbsp;' +
+            '<span id="select_date_day_region" class"form-group"></span>' +
+            '&nbsp;日&nbsp;' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_team">Team</label>'+
-          '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_team" value="<%= team %>" />' +
-          '</div>' +
+          '<div id="select_team_region" class="col-sm-10"></div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_result">Result</label>'+
-          '<div class="col-sm-10">' +
-            '<select class="form-control input-sm" id="input_result">' +
-              '<option <%= selected("win") %>>Win</option>' +
-              '<option <%= selected("lose") %>>Lose</option>' +
-              '<option <%= selected("draw") %>>Draw</option>' +
-            '</select>' +
-          '</div>' +
+          '<div id="select_result_region" class="col-sm-10"></div>' +
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_starter">Starter</label>'+
@@ -261,9 +396,6 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ),
     templateHelpers: function() {
         return {
-            selected: function(result) {
-                return this.model.get('result') === result ? 'selected' : '';
-            }.bind(this),
             deleteBtn: this.model.isNew() ? '' : '<div class="clearfix">' +
                                                    '<button id="delete_history" class="btn btn-default btn-xs pull-right">' +
                                                      '<i class="fa fa-trash" />' +
@@ -272,9 +404,6 @@ module.exports = Backbone.Marionette.ItemView.extend({
         }
     },
     ui: {
-        inputDate    : '#input_date',
-        inputTeam    : '#input_team',
-        inputResult  : '#input_result',
         inputStarter : '#input_starter',
         inputLocation: '#input_location',
         submitBtn    : '#submit_history',
@@ -284,12 +413,108 @@ module.exports = Backbone.Marionette.ItemView.extend({
         'click @ui.submitBtn': 'onClickSubmit',
         'click @ui.deleteBtn': 'onClickDelete',
     },
+    regions: {
+        selectYear  : '#select_date_year_region',
+        selectMonth : '#select_date_month_region',
+        selectDay   : '#select_date_day_region',
+        selectTeam  : '#select_team_region',
+        selectResult: '#select_result_region',
+    },
+    initialize: function(options) {
+        this.teams = options.teams;
+        this.date = moment(new Date(this.model.get('date') || new Date()));
+    },
+    onRender: function() {
+        this.renderSelectYear();
+        this.renderSelectMonth();
+        this.renderSelectDay();
+        this.renderSelectTeam();
+        this.renderSelectResult();
+    },
+    renderSelectYear: function() {
+        var year = moment(new Date()).year();
+        var years = new Backbone.Collection(
+            _.map(_.range(year, year - 10, -1), function(i) {
+                return { id: i, year: i };
+            })
+        );
+        var selectboxView = new SelectboxView({
+            _id: 'input_date_year',
+            _className: 'form-control input-sm',
+            collection: years,
+            label: 'year',
+            value: 'year',
+            selected: years.findWhere({ year: parseInt(this.date.format('YYYY')) }),
+        });
+        this.getRegion('selectYear').show(selectboxView);
+    },
+    renderSelectMonth: function() {
+        var months = new Backbone.Collection(
+            _.map(_.range(1, 13), function(i) {
+                return { id: i, month: i };
+            })
+        );
+        var selectboxView = new SelectboxView({
+            _id: 'input_date_month',
+            _className: 'form-control input-sm',
+            collection: months,
+            label: 'month',
+            value: 'month',
+            selected: months.findWhere({ month: parseInt(this.date.format('M')) }),
+        });
+        this.getRegion('selectMonth').show(selectboxView);
+    },
+    renderSelectDay: function() {
+        var days = new Backbone.Collection(
+            _.map(_.range(1, 32), function(i) {
+                return { id: i, day: i };
+            })
+        );
+        var selectboxView = new SelectboxView({
+            _id: 'input_date_day',
+            _className: 'form-control input-sm',
+            collection: days,
+            label: 'day',
+            value: 'day',
+            selected: days.findWhere({ day: parseInt(this.date.format('D')) }),
+        });
+        this.getRegion('selectDay').show(selectboxView);
+    },
+    renderSelectTeam: function() {
+        var selectboxView = new SelectboxView({
+            _id: 'input_team',
+            _className: 'form-control input-sm',
+            collection: this.teams,
+            label: 'short_name',
+            value: 'id',
+        });
+        this.getRegion('selectTeam').show(selectboxView);
+    },
+    renderSelectResult: function() {
+        var collection = new Backbone.Collection([
+            { label: '&#9675; 勝ち', value: 'win' },
+            { label: '&#9679; 負け', value: 'lose' },
+            { label: '&#9651; 引き分け', value: 'draw' },
+        ]);
+        var selectboxView = new SelectboxView({
+            _id: 'input_result',
+            _className: 'form-control input-sm',
+            collection: collection,
+            label: 'label',
+            value: 'value',
+        });
+        this.getRegion('selectResult').show(selectboxView);
+    },
     onClickSubmit: function(e) {
         e.preventDefault();
+        var year = this.$('#input_date_year').val();
+        var month = this.$('#input_date_month').val();
+        var day = this.$('#input_date_day').val();
+        var date = moment([year, parseInt(month - 1), day]);
         this.model.save({
-            date    : this.ui.inputDate.val().trim(),
-            team    : this.ui.inputTeam.val().trim(),
-            result  : this.ui.inputResult.val(),
+            date    : date.format('YYYY-MM-DD'),
+            team_id : this.$('#input_team').val(),
+            result  : this.$('#input_result').val(),
             starter : this.ui.inputStarter.val().trim(),
             location: this.ui.inputLocation.val().trim(),
         }, {
@@ -306,7 +531,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     },
 });
 
-},{"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],10:[function(require,module,exports){
+},{"../../lib/SelectboxView":3,"backbone":"backbone","backbone.marionette":16,"moment":18,"underscore":"underscore"}],13:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -319,21 +544,25 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     regions: {
         formRegion: '#form_region',
     },
+    initialize: function(options) {
+        this.teams = options.teams;
+    },
     onRender: function() {
         this.renderForm();
     },
     renderForm: function() {
-        this.getRegion('formRegion').show(new FormView({ model: this.model }));
+        this.getRegion('formRegion').show(new FormView({ model: this.model, teams: this.teams }));
     },
 });
 
-},{"./FormView":9,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],11:[function(require,module,exports){
+},{"./FormView":12,"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],14:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
 var History    = require('../../models/History');
 var Histories  = require('../../collections/Histories');
+var Teams      = require('../../collections/Teams');
 var HeaderView = require('../HeaderView');
 var MainView   = require('./MainView');
 
@@ -358,16 +587,18 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     renderMain: function() {
         var history = new History({}, { collection: new Histories() });
+        var teams = new Teams();
         if(this.historyId) history.set({ id: this.historyId });
-        history.fetch({
-            success: function() {
-                this.getRegion('mainRegion').show(new MainView({ model: history }));
-            }.bind(this),
-        });
+        Backbone.$.when(
+            history.has('id') ? history.fetch() : _.noop(),
+            teams.fetch()
+        ).done(function() {
+            this.getRegion('mainRegion').show(new MainView({ model: history, teams: teams }));
+        }.bind(this));
     },
 });
 
-},{"../../collections/Histories":1,"../../models/History":3,"../HeaderView":4,"./MainView":10,"backbone":"backbone","backbone.marionette":13,"underscore":"underscore"}],12:[function(require,module,exports){
+},{"../../collections/Histories":1,"../../collections/Teams":2,"../../models/History":5,"../HeaderView":7,"./MainView":13,"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],15:[function(require,module,exports){
 // Backbone.BabySitter
 // -------------------
 // v0.1.11
@@ -559,7 +790,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],13:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],16:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v2.4.7
@@ -4073,7 +4304,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
   return Marionette;
 }));
 
-},{"backbone":"backbone","backbone.babysitter":12,"backbone.wreqr":14,"underscore":"underscore"}],14:[function(require,module,exports){
+},{"backbone":"backbone","backbone.babysitter":15,"backbone.wreqr":17,"underscore":"underscore"}],17:[function(require,module,exports){
 // Backbone.Wreqr (Backbone.Marionette)
 // ----------------------------------
 // v1.3.6
@@ -4510,7 +4741,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],15:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],18:[function(require,module,exports){
 //! moment.js
 //! version : 2.15.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -22646,4 +22877,4 @@ return jQuery;
   }
 }.call(this));
 
-},{}]},{},[2]);
+},{}]},{},[4]);
