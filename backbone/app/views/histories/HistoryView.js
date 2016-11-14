@@ -14,7 +14,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ),
     templateHelpers: function() {
         return {
-            resultAndTeam: this.model.resultMark() + ' ' + this.model.get('team'),
+            resultAndTeam: this.model.resultMark() + ' ' + this.model.shortTeamName(),
         }
     },
     ui: {

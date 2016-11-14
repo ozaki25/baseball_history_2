@@ -10,12 +10,15 @@ module.exports = Backbone.Model.extend({
         location: '',
     },
     getDetailUrl: function() {
-        var date = moment(new Date(this.get('date'))).format('YYYYMMDD')
-        return 'http://www.fighters.co.jp/gamelive/result/' + date + '01/'
+        var date = moment(new Date(this.get('date'))).format('YYYYMMDD');
+        return 'http://www.fighters.co.jp/gamelive/result/' + date + '01/';
+    },
+    shortTeamName: function() {
+        return !!this.get('team') ? this.get('team').short_name : '';
     },
     resultMark: function() {
         var resultMark;
-        switch (this.get('result').toLowerCase()){
+        switch (this.get('result').toLowerCase()) {
         case 'win':
             resultMark = '&#9675;';
             break;

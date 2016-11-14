@@ -63,20 +63,23 @@ module.exports = Backbone.Model.extend({
         location: '',
     },
     getDetailUrl: function() {
-        var date = moment(new Date(this.get('date'))).format('YYYYMMDD')
-        return 'http://www.fighters.co.jp/gamelive/result/' + date + '01/'
+        var date = moment(new Date(this.get('date'))).format('YYYYMMDD');
+        return 'http://www.fighters.co.jp/gamelive/result/' + date + '01/';
+    },
+    shortTeamName: function() {
+        return !!this.get('team') ? this.get('team').short_name : '';
     },
     resultMark: function() {
         var resultMark;
-        switch (this.get('result').toLowerCase()){
+        switch (this.get('result').toLowerCase()) {
         case 'win':
-            resultMark = '○';
+            resultMark = '&#9675;';
             break;
         case 'lose':
-            resultMark = '●';
+            resultMark = '&#9679;';
             break;
         case 'draw':
-            resultMark = '△';
+            resultMark = '&#9651;';
             break;
         default:
             resultMark = '-';
@@ -151,7 +154,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ),
     templateHelpers: function() {
         return {
-            resultAndTeam: this.model.resultMark() + ' ' + this.model.get('team'),
+            resultAndTeam: this.model.resultMark() + ' ' + this.model.shortTeamName(),
         }
     },
     ui: {

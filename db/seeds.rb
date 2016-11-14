@@ -6,12 +6,6 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-History.create([
-                 { date: '2016-09-01', team: '楽天', result: 'win', starter: '増井', location: '東京ドーム' },
-                 { date: '2016-08-31', team: '楽天', result: 'lose', starter: 'メンドーサ', location: '東京ドーム' },
-                 { date: '2016-08-30', team: '楽天', result: 'lose', starter: 'バース', location: '東京ドーム' },
-               ])
-
 teams = [
   { long_name: '北海道日本ハムファイターズ',   short_name: '日本ハム',     league: 'パ' },
   { long_name: '福岡ソフトバンクホークス',     short_name: 'ソフトバンク', league: 'パ' },
@@ -29,3 +23,13 @@ teams = [
 ]
 
 Team.create(teams)
+
+eagles = Team.find_by(short_name: '楽天')
+
+histories = [
+  { date: '2016-09-01', result: 'win', starter: '増井', location: '東京ドーム', team: eagles },
+  { date: '2016-08-31', result: 'lose', starter: 'メンドーサ', location: '東京ドーム', team: eagles },
+  { date: '2016-08-30', result: 'lose', starter: 'バース', location: '東京ドーム', team: eagles },
+]
+
+History.create(histories)
