@@ -12,11 +12,12 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     initialize: function(options) {
         this.teams = options.teams;
+        this.locations = options.locations;
     },
     onRender: function() {
         this.renderForm();
     },
     renderForm: function() {
-        this.getRegion('formRegion').show(new FormView({ model: this.model, teams: this.teams }));
+        this.getRegion('formRegion').show(new FormView({ model: this.model, teams: this.teams, locations: this.locations }));
     },
 });

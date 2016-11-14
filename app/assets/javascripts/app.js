@@ -7,7 +7,16 @@ module.exports = Backbone.Collection.extend({
     url: '/histories',
 });
 
-},{"../models/History":5,"backbone":"backbone"}],2:[function(require,module,exports){
+},{"../models/History":6,"backbone":"backbone"}],2:[function(require,module,exports){
+var Backbone = require('backbone');
+var Location = require('../models/Location');
+
+module.exports = Backbone.Collection.extend({
+    model: Location,
+    url: '/locations',
+});
+
+},{"../models/Location":7,"backbone":"backbone"}],3:[function(require,module,exports){
 var Backbone = require('backbone');
 var Team = require('../models/Team');
 
@@ -16,7 +25,7 @@ module.exports = Backbone.Collection.extend({
     url: '/teams',
 });
 
-},{"../models/Team":6,"backbone":"backbone"}],3:[function(require,module,exports){
+},{"../models/Team":8,"backbone":"backbone"}],4:[function(require,module,exports){
 /*
 var SelectboxView = require('./SelectboxView')
 var selectboxView = new SelectboxView({
@@ -107,7 +116,7 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
 
 module.exports = SelectboxView;
 
-},{"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],4:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],5:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
@@ -150,17 +159,17 @@ var app = new Backbone.Marionette.Application({
 
 app.start();
 
-},{"./views/histories/RootView.js":11,"./views/history/RootView.js":14,"backbone":"backbone","backbone.marionette":16}],5:[function(require,module,exports){
+},{"./views/histories/RootView.js":13,"./views/history/RootView.js":16,"backbone":"backbone","backbone.marionette":18}],6:[function(require,module,exports){
 var Backbone = require('backbone');
 var moment = require('moment');
 
 module.exports = Backbone.Model.extend({
     defaults: {
         date: '',
-        team: '',
         result: '',
         starter: '',
-        location: '',
+        team_id: '',
+        location_id: '',
     },
     getDetailUrl: function() {
         var date = moment(new Date(this.get('date'))).format('YYYYMMDD');
@@ -168,6 +177,9 @@ module.exports = Backbone.Model.extend({
     },
     shortTeamName: function() {
         return !!this.get('team') ? this.get('team').short_name : '';
+    },
+    shortLocationName: function() {
+        return !!this.get('location') ? this.get('location').short_name : '';
     },
     resultMark: function() {
         var resultMark;
@@ -189,7 +201,17 @@ module.exports = Backbone.Model.extend({
     },
 });
 
-},{"backbone":"backbone","moment":18}],6:[function(require,module,exports){
+},{"backbone":"backbone","moment":20}],7:[function(require,module,exports){
+var Backbone = require('backbone');
+
+module.exports = Backbone.Model.extend({
+    defaults: {
+        longName: '',
+        sortName: '',
+    },
+});
+
+},{"backbone":"backbone"}],8:[function(require,module,exports){
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
@@ -200,7 +222,7 @@ module.exports = Backbone.Model.extend({
     },
 });
 
-},{"backbone":"backbone"}],7:[function(require,module,exports){
+},{"backbone":"backbone"}],9:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -232,7 +254,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ),
 });
 
-},{"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],8:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],10:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -248,7 +270,7 @@ module.exports = Backbone.Marionette.CompositeView.extend({
     childViewContainer: '#histories_child_container',
 });
 
-},{"./HistoryView":9,"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],9:[function(require,module,exports){
+},{"./HistoryView":11,"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],11:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -259,13 +281,14 @@ module.exports = Backbone.Marionette.ItemView.extend({
         '<td><%- date %></td>' +
         '<td><%= resultAndTeam %></td>' +
         '<td><%- starter %></td>' +
-        '<td><%- location %></td>' +
+        '<td><%- locationName %></td>' +
         '<td><a class="detail-link btn btn-link btn-xs" href="#">詳細</a></td>' +
         '<td><button class="btn btn-default btn-xs"><i class="fa fa-wrench control-history" /></button></td>'
     ),
     templateHelpers: function() {
         return {
             resultAndTeam: this.model.resultMark() + ' ' + this.model.shortTeamName(),
+            locationName: this.model.shortLocationName(),
         }
     },
     ui: {
@@ -286,7 +309,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     },
 });
 
-},{"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],10:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],12:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -313,7 +336,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"./HistoriesView":8,"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],11:[function(require,module,exports){
+},{"./HistoriesView":10,"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],13:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -345,7 +368,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"../../collections/Histories":1,"../HeaderView":7,"./MainView":10,"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],12:[function(require,module,exports){
+},{"../../collections/Histories":1,"../HeaderView":9,"./MainView":12,"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],14:[function(require,module,exports){
 var _ = require('underscore');
 var moment = require('moment');
 var Backbone = require('backbone');
@@ -384,9 +407,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_location">Location</label>'+
-          '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_location" value="<%- location %>" />' +
-          '</div>' +
+          '<div id="select_location_region" class="col-sm-10"></div>' +
         '</div>' +
         '<div class="form-group">' +
           '<div class="col-xs-12 col-sm-offset-2 col-sm-2">'+
@@ -405,7 +426,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     ui: {
         inputStarter : '#input_starter',
-        inputLocation: '#input_location',
         submitBtn    : '#submit_history',
         deleteBtn    : '#delete_history',
     },
@@ -414,14 +434,16 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'click @ui.deleteBtn': 'onClickDelete',
     },
     regions: {
-        selectYear  : '#select_date_year_region',
-        selectMonth : '#select_date_month_region',
-        selectDay   : '#select_date_day_region',
-        selectTeam  : '#select_team_region',
-        selectResult: '#select_result_region',
+        selectYear     : '#select_date_year_region',
+        selectMonth    : '#select_date_month_region',
+        selectDay      : '#select_date_day_region',
+        selectTeam     : '#select_team_region',
+        selectResult   : '#select_result_region',
+        selectLocation : '#select_location_region',
     },
     initialize: function(options) {
         this.teams = options.teams;
+        this.locations = options.locations;
         this.date = moment(new Date(this.model.get('date') || new Date()));
     },
     onRender: function() {
@@ -430,6 +452,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.renderSelectDay();
         this.renderSelectTeam();
         this.renderSelectResult();
+        this.renderSelectLocation();
     },
     renderSelectYear: function() {
         var year = moment(new Date()).year();
@@ -481,12 +504,15 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('selectDay').show(selectboxView);
     },
     renderSelectTeam: function() {
+        console.log(this.model)
+        console.log(this.teams)
         var selectboxView = new SelectboxView({
             _id: 'input_team',
             _className: 'form-control input-sm',
             collection: this.teams,
             label: 'short_name',
             value: 'id',
+            selected: this.teams.findWhere({ id: parseInt(this.model.get('team_id')) }),
         });
         this.getRegion('selectTeam').show(selectboxView);
     },
@@ -502,8 +528,20 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             collection: collection,
             label: 'label',
             value: 'value',
+            selected: collection.findWhere({ value: this.model.get('result') }),
         });
         this.getRegion('selectResult').show(selectboxView);
+    },
+    renderSelectLocation: function() {
+        var selectboxView = new SelectboxView({
+            _id: 'input_location',
+            _className: 'form-control input-sm',
+            collection: this.locations,
+            label: 'short_name',
+            value: 'id',
+            selected: this.locations.findWhere({ id: parseInt(this.model.get('location_id')) }),
+        });
+        this.getRegion('selectLocation').show(selectboxView);
     },
     onClickSubmit: function(e) {
         e.preventDefault();
@@ -512,11 +550,11 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         var day = this.$('#input_date_day').val();
         var date = moment([year, parseInt(month - 1), day]);
         this.model.save({
-            date    : date.format('YYYY-MM-DD'),
-            team_id : this.$('#input_team').val(),
-            result  : this.$('#input_result').val(),
-            starter : this.ui.inputStarter.val().trim(),
-            location: this.ui.inputLocation.val().trim(),
+            date       : date.format('YYYY-MM-DD'),
+            team_id    : this.$('#input_team').val(),
+            result     : this.$('#input_result').val(),
+            starter    : this.ui.inputStarter.val().trim(),
+            location_id: this.$('#input_location').val(),
         }, {
             wait: true
         });
@@ -531,7 +569,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"../../lib/SelectboxView":3,"backbone":"backbone","backbone.marionette":16,"moment":18,"underscore":"underscore"}],13:[function(require,module,exports){
+},{"../../lib/SelectboxView":4,"backbone":"backbone","backbone.marionette":18,"moment":20,"underscore":"underscore"}],15:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -546,16 +584,17 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     initialize: function(options) {
         this.teams = options.teams;
+        this.locations = options.locations;
     },
     onRender: function() {
         this.renderForm();
     },
     renderForm: function() {
-        this.getRegion('formRegion').show(new FormView({ model: this.model, teams: this.teams }));
+        this.getRegion('formRegion').show(new FormView({ model: this.model, teams: this.teams, locations: this.locations }));
     },
 });
 
-},{"./FormView":12,"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],14:[function(require,module,exports){
+},{"./FormView":14,"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],16:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -563,6 +602,7 @@ Backbone.Marionette = require('backbone.marionette');
 var History    = require('../../models/History');
 var Histories  = require('../../collections/Histories');
 var Teams      = require('../../collections/Teams');
+var Locations  = require('../../collections/Locations');
 var HeaderView = require('../HeaderView');
 var MainView   = require('./MainView');
 
@@ -586,19 +626,21 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('headerRegion').show(new HeaderView());
     },
     renderMain: function() {
-        var history = new History({}, { collection: new Histories() });
-        var teams = new Teams();
+        var history   = new History({}, { collection: new Histories() });
+        var teams     = new Teams();
+        var locations = new Locations();
         if(this.historyId) history.set({ id: this.historyId });
         Backbone.$.when(
             history.has('id') ? history.fetch() : _.noop(),
-            teams.fetch()
+            teams.fetch(),
+            locations.fetch()
         ).done(function() {
-            this.getRegion('mainRegion').show(new MainView({ model: history, teams: teams }));
+            this.getRegion('mainRegion').show(new MainView({ model: history, teams: teams, locations: locations }));
         }.bind(this));
     },
 });
 
-},{"../../collections/Histories":1,"../../collections/Teams":2,"../../models/History":5,"../HeaderView":7,"./MainView":13,"backbone":"backbone","backbone.marionette":16,"underscore":"underscore"}],15:[function(require,module,exports){
+},{"../../collections/Histories":1,"../../collections/Locations":2,"../../collections/Teams":3,"../../models/History":6,"../HeaderView":9,"./MainView":15,"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],17:[function(require,module,exports){
 // Backbone.BabySitter
 // -------------------
 // v0.1.11
@@ -790,7 +832,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],16:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],18:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v2.4.7
@@ -4304,7 +4346,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
   return Marionette;
 }));
 
-},{"backbone":"backbone","backbone.babysitter":15,"backbone.wreqr":17,"underscore":"underscore"}],17:[function(require,module,exports){
+},{"backbone":"backbone","backbone.babysitter":17,"backbone.wreqr":19,"underscore":"underscore"}],19:[function(require,module,exports){
 // Backbone.Wreqr (Backbone.Marionette)
 // ----------------------------------
 // v1.3.6
@@ -4741,7 +4783,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],18:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],20:[function(require,module,exports){
 //! moment.js
 //! version : 2.15.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -22877,4 +22919,4 @@ return jQuery;
   }
 }.call(this));
 
-},{}]},{},[4]);
+},{}]},{},[5]);

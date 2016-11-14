@@ -36,9 +36,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         '</div>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_location">Location</label>'+
-          '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_location" value="<%- location %>" />' +
-          '</div>' +
+          '<div id="select_location_region" class="col-sm-10"></div>' +
         '</div>' +
         '<div class="form-group">' +
           '<div class="col-xs-12 col-sm-offset-2 col-sm-2">'+
@@ -57,7 +55,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     ui: {
         inputStarter : '#input_starter',
-        inputLocation: '#input_location',
         submitBtn    : '#submit_history',
         deleteBtn    : '#delete_history',
     },
@@ -66,14 +63,16 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'click @ui.deleteBtn': 'onClickDelete',
     },
     regions: {
-        selectYear  : '#select_date_year_region',
-        selectMonth : '#select_date_month_region',
-        selectDay   : '#select_date_day_region',
-        selectTeam  : '#select_team_region',
-        selectResult: '#select_result_region',
+        selectYear     : '#select_date_year_region',
+        selectMonth    : '#select_date_month_region',
+        selectDay      : '#select_date_day_region',
+        selectTeam     : '#select_team_region',
+        selectResult   : '#select_result_region',
+        selectLocation : '#select_location_region',
     },
     initialize: function(options) {
         this.teams = options.teams;
+        this.locations = options.locations;
         this.date = moment(new Date(this.model.get('date') || new Date()));
     },
     onRender: function() {
@@ -82,6 +81,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.renderSelectDay();
         this.renderSelectTeam();
         this.renderSelectResult();
+        this.renderSelectLocation();
     },
     renderSelectYear: function() {
         var year = moment(new Date()).year();
@@ -139,6 +139,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             collection: this.teams,
             label: 'short_name',
             value: 'id',
+            selected: this.teams.findWhere({ id: parseInt(this.model.get('team_id')) }),
         });
         this.getRegion('selectTeam').show(selectboxView);
     },
@@ -154,8 +155,20 @@ module.exports = Backbone.Marionette.LayoutView.extend({
             collection: collection,
             label: 'label',
             value: 'value',
+            selected: collection.findWhere({ value: this.model.get('result') }),
         });
         this.getRegion('selectResult').show(selectboxView);
+    },
+    renderSelectLocation: function() {
+        var selectboxView = new SelectboxView({
+            _id: 'input_location',
+            _className: 'form-control input-sm',
+            collection: this.locations,
+            label: 'short_name',
+            value: 'id',
+            selected: this.locations.findWhere({ id: parseInt(this.model.get('location_id')) }),
+        });
+        this.getRegion('selectLocation').show(selectboxView);
     },
     onClickSubmit: function(e) {
         e.preventDefault();
@@ -164,11 +177,11 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         var day = this.$('#input_date_day').val();
         var date = moment([year, parseInt(month - 1), day]);
         this.model.save({
-            date    : date.format('YYYY-MM-DD'),
-            team_id : this.$('#input_team').val(),
-            result  : this.$('#input_result').val(),
-            starter : this.ui.inputStarter.val().trim(),
-            location: this.ui.inputLocation.val().trim(),
+            date       : date.format('YYYY-MM-DD'),
+            team_id    : this.$('#input_team').val(),
+            result     : this.$('#input_result').val(),
+            starter    : this.ui.inputStarter.val().trim(),
+            location_id: this.$('#input_location').val(),
         }, {
             wait: true
         });
