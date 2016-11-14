@@ -1,5 +1,5 @@
-require('bootstrap-datepicker');
 var _ = require('underscore');
+var moment = require('moment');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 var SelectboxView = require('../../lib/SelectboxView');
@@ -11,8 +11,13 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         '<%= deleteBtn  %>' +
         '<div class="form-group">' +
           '<label class="col-sm-2 control-label" for="input_date">Date</label>'+
-          '<div class="col-sm-10">' +
-            '<input type="text" class="form-control input-sm" id="input_date" value="<%- date %>" />' +
+          '<div class="form-inline col-sm-10">' +
+            '<span id="select_date_year_region" class"form-group"></span>' +
+            '&nbsp;年&nbsp;' +
+            '<span id="select_date_month_region" class"form-group"></span>' +
+            '&nbsp;月&nbsp;' +
+            '<span id="select_date_day_region" class"form-group"></span>' +
+            '&nbsp;日&nbsp;' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
@@ -51,7 +56,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         }
     },
     ui: {
-        inputDate    : '#input_date',
         inputStarter : '#input_starter',
         inputLocation: '#input_location',
         submitBtn    : '#submit_history',
@@ -62,23 +66,71 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         'click @ui.deleteBtn': 'onClickDelete',
     },
     regions: {
+        selectYear  : '#select_date_year_region',
+        selectMonth : '#select_date_month_region',
+        selectDay   : '#select_date_day_region',
         selectTeam  : '#select_team_region',
         selectResult: '#select_result_region',
     },
     initialize: function(options) {
         this.teams = options.teams;
+        this.date = moment(new Date(this.model.get('date') || new Date()));
     },
     onRender: function() {
+        this.renderSelectYear();
+        this.renderSelectMonth();
+        this.renderSelectDay();
         this.renderSelectTeam();
         this.renderSelectResult();
     },
-    onShow: function() {
-        this.$('#input_date').datepicker({
-            language: 'ja',
-            format: 'yyyy-mm-dd',
-            autoclose: true,
-            todayHighlight: true,
+    renderSelectYear: function() {
+        var year = moment(new Date()).year();
+        var years = new Backbone.Collection(
+            _.map(_.range(year, year - 10, -1), function(i) {
+                return { id: i, year: i };
+            })
+        );
+        var selectboxView = new SelectboxView({
+            _id: 'input_date_year',
+            _className: 'form-control input-sm',
+            collection: years,
+            label: 'year',
+            value: 'year',
+            selected: years.findWhere({ year: parseInt(this.date.format('YYYY')) }),
         });
+        this.getRegion('selectYear').show(selectboxView);
+    },
+    renderSelectMonth: function() {
+        var months = new Backbone.Collection(
+            _.map(_.range(1, 13), function(i) {
+                return { id: i, month: i };
+            })
+        );
+        var selectboxView = new SelectboxView({
+            _id: 'input_date_month',
+            _className: 'form-control input-sm',
+            collection: months,
+            label: 'month',
+            value: 'month',
+            selected: months.findWhere({ month: parseInt(this.date.format('M')) }),
+        });
+        this.getRegion('selectMonth').show(selectboxView);
+    },
+    renderSelectDay: function() {
+        var days = new Backbone.Collection(
+            _.map(_.range(1, 32), function(i) {
+                return { id: i, day: i };
+            })
+        );
+        var selectboxView = new SelectboxView({
+            _id: 'input_date_day',
+            _className: 'form-control input-sm',
+            collection: days,
+            label: 'day',
+            value: 'day',
+            selected: days.findWhere({ day: parseInt(this.date.format('D')) }),
+        });
+        this.getRegion('selectDay').show(selectboxView);
     },
     renderSelectTeam: function() {
         var selectboxView = new SelectboxView({
@@ -107,8 +159,12 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     onClickSubmit: function(e) {
         e.preventDefault();
+        var year = this.$('#input_date_year').val();
+        var month = this.$('#input_date_month').val();
+        var day = this.$('#input_date_day').val();
+        var date = moment([year, parseInt(month - 1), day]);
         this.model.save({
-            date    : this.ui.inputDate.val().trim(),
+            date    : date.format('YYYY-MM-DD'),
             team_id : this.$('#input_team').val(),
             result  : this.$('#input_result').val(),
             starter : this.ui.inputStarter.val().trim(),
