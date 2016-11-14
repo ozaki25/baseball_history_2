@@ -4,10 +4,10 @@ var moment = require('moment');
 module.exports = Backbone.Model.extend({
     defaults: {
         date: '',
-        team: '',
         result: '',
         starter: '',
-        location: '',
+        team_id: '',
+        location_id: '',
     },
     getDetailUrl: function() {
         var date = moment(new Date(this.get('date'))).format('YYYYMMDD');
@@ -15,6 +15,9 @@ module.exports = Backbone.Model.extend({
     },
     shortTeamName: function() {
         return !!this.get('team') ? this.get('team').short_name : '';
+    },
+    shortLocationName: function() {
+        return !!this.get('location') ? this.get('location').short_name : '';
     },
     resultMark: function() {
         var resultMark;

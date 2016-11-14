@@ -5,6 +5,7 @@ Backbone.Marionette = require('backbone.marionette');
 var History    = require('../../models/History');
 var Histories  = require('../../collections/Histories');
 var Teams      = require('../../collections/Teams');
+var Locations  = require('../../collections/Locations');
 var HeaderView = require('../HeaderView');
 var MainView   = require('./MainView');
 
@@ -28,14 +29,16 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('headerRegion').show(new HeaderView());
     },
     renderMain: function() {
-        var history = new History({}, { collection: new Histories() });
-        var teams = new Teams();
+        var history   = new History({}, { collection: new Histories() });
+        var teams     = new Teams();
+        var locations = new Locations();
         if(this.historyId) history.set({ id: this.historyId });
         Backbone.$.when(
             history.has('id') ? history.fetch() : _.noop(),
-            teams.fetch()
+            teams.fetch(),
+            locations.fetch()
         ).done(function() {
-            this.getRegion('mainRegion').show(new MainView({ model: history, teams: teams }));
+            this.getRegion('mainRegion').show(new MainView({ model: history, teams: teams, locations: locations }));
         }.bind(this));
     },
 });

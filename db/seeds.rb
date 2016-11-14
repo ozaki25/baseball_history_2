@@ -19,17 +19,35 @@ teams = [
   { long_name: '阪神タイガース',               short_name: '阪神',         league: 'セ' },
   { long_name: '東京ヤクルトスワローズ',       short_name: 'ヤクルト',     league: 'セ' },
   { long_name: '中日ドラゴンズ',               short_name: '中日',         league: 'セ' },
-
 ]
 
 Team.create(teams)
 
 eagles = Team.find_by(short_name: '楽天')
 
+locations = [
+  { short_name: '札幌ドーム',       long_name: '札幌ドーム' },
+  { short_name: '福岡ドーム',       long_name: '福岡ヤフオク!ドーム' },
+  { short_name: '千葉マリン',       long_name: '千葉マリンスタジアム' },
+  { short_name: '西武ドーム',       long_name: '西武プリンスドーム' },
+  { short_name: '大阪ドーム',       long_name: '京セラドーム大阪' },
+  { short_name: 'Koboパーク',       long_name: 'Koboパーク宮城' },
+  { short_name: 'マツダスタジアム', long_name: 'MAZDA Zoom-Zoomスタジアム広島' },
+  { short_name: '東京ドーム',       long_name: '東京ドーム' },
+  { short_name: '横浜スタジアム',   long_name: '横浜スタジアム' },
+  { short_name: '甲子園',           long_name: '阪神甲子園球場' },
+  { short_name: '神宮球場',         long_name: '明治神宮野球場' },
+  { short_name: 'ナゴヤドーム',     long_name: 'ナゴヤドーム' },
+  { short_name: 'スタルヒン球場',   long_name: '花咲スポーツ公園硬式野球場' },
+]
+
+Location.create(locations)
+tokyo_dome = Location.find_by(short_name: '東京ドーム')
+
 histories = [
-  { date: '2016-09-01', result: 'win', starter: '増井', location: '東京ドーム', team: eagles },
-  { date: '2016-08-31', result: 'lose', starter: 'メンドーサ', location: '東京ドーム', team: eagles },
-  { date: '2016-08-30', result: 'lose', starter: 'バース', location: '東京ドーム', team: eagles },
+  { date: '2016-09-01', result: 'win', starter: '増井', location: tokyo_dome, team: eagles },
+  { date: '2016-08-31', result: 'lose', starter: 'メンドーサ', location: tokyo_dome, team: eagles },
+  { date: '2016-08-30', result: 'lose', starter: 'バース', location: tokyo_dome, team: eagles },
 ]
 
 History.create(histories)

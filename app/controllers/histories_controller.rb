@@ -43,6 +43,6 @@ class HistoriesController < ApplicationController
   end
 
   def history_params
-    params.require(:history).permit(%i(date result starter location team_id))
+    params.require(:history).permit(%i(date result starter location_id team_id))
   end
 end
