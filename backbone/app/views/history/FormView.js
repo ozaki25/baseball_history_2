@@ -185,13 +185,13 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         }, {
             wait: true
         });
-        Backbone.history.navigate('histories', { trigger: true });
+        Backbone.history.navigate('/backbone/histories', { trigger: true });
     },
     onClickDelete: function(e) {
         e.preventDefault();
         if(confirm('削除します')) {
             this.model.destroy({ wait: true });
-            Backbone.history.navigate('/histories', { trigger: true });
+            Backbone.history.navigate('/backbone/histories', { trigger: true });
         }
     },
 });

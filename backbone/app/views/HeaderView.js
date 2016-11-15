@@ -18,10 +18,10 @@ module.exports = Backbone.Marionette.ItemView.extend({
             '<div class="collapse navbar-collapse" id="navbar_links">' +
             '<ul class="nav navbar-nav navbar-right">' +
             '<li>' +
-            '<a href="/#histories">Index</a>' +
+            '<a href="/#backbone/histories">Index</a>' +
             '</li>' +
                '<li>' +
-                 '<a href="/#histories/new">New</a>' +
+                 '<a href="/#backbone/histories/new">New</a>' +
                '</li>' +
              '</ul>' +
            '</div>' +

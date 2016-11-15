@@ -20,6 +20,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('historiesRegion').show(new HistoriesView({ collection: this.collection }));
     },
     onClickEdit: function(view) {
-        Backbone.history.navigate('/histories/' + view.model.id + '/edit', { trigger: true });
+        Backbone.history.navigate('/backbone/histories/' + view.model.id + '/edit', { trigger: true });
     },
 });

@@ -124,13 +124,13 @@ var HistoriesRootView = require('./views/histories/RootView.js');
 var HistoryRootView   = require('./views/history/RootView.js');
 
 var historiesRouter = {
-    ''                  : 'index',
-    'histories'         : 'index',
-    'histories/new'     : 'newHistory',
-    'histories/:id/edit': 'edit',
+    ''                           : 'index',
+    'backbone/histories'         : 'index',
+    'backbone/histories/new'     : 'newHistory',
+    'backbone/histories/:id/edit': 'edit',
 };
 
-var historiesController = {
+var backboneHistoriesController = {
     index: function() {
         app.getRegion('rootRegion').show(new HistoriesRootView());
     },
@@ -142,9 +142,21 @@ var historiesController = {
     },
 };
 
+var reactHistoriesController = {
+    index: function() {
+
+    },
+    newHistory: function() {
+
+    },
+    edit: function(id) {
+
+    },
+};
+
 var appRouter = Backbone.Marionette.AppRouter.extend({
     appRoutes: historiesRouter,
-    controller: historiesController,
+    controller: Backbone.history.getHash().indexOf('backbone') !== -1 ? backboneHistoriesController : reactHistoriesController,
 });
 
 var app = new Backbone.Marionette.Application({
@@ -243,10 +255,10 @@ module.exports = Backbone.Marionette.ItemView.extend({
             '<div class="collapse navbar-collapse" id="navbar_links">' +
             '<ul class="nav navbar-nav navbar-right">' +
             '<li>' +
-            '<a href="/#histories">Index</a>' +
+            '<a href="/#backbone/histories">Index</a>' +
             '</li>' +
                '<li>' +
-                 '<a href="/#histories/new">New</a>' +
+                 '<a href="/#backbone/histories/new">New</a>' +
                '</li>' +
              '</ul>' +
            '</div>' +
@@ -332,7 +344,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('historiesRegion').show(new HistoriesView({ collection: this.collection }));
     },
     onClickEdit: function(view) {
-        Backbone.history.navigate('/histories/' + view.model.id + '/edit', { trigger: true });
+        Backbone.history.navigate('/backbone/histories/' + view.model.id + '/edit', { trigger: true });
     },
 });
 
@@ -504,8 +516,6 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         this.getRegion('selectDay').show(selectboxView);
     },
     renderSelectTeam: function() {
-        console.log(this.model)
-        console.log(this.teams)
         var selectboxView = new SelectboxView({
             _id: 'input_team',
             _className: 'form-control input-sm',
@@ -558,13 +568,13 @@ module.exports = Backbone.Marionette.LayoutView.extend({
         }, {
             wait: true
         });
-        Backbone.history.navigate('histories', { trigger: true });
+        Backbone.history.navigate('/backbone/histories', { trigger: true });
     },
     onClickDelete: function(e) {
         e.preventDefault();
         if(confirm('削除します')) {
             this.model.destroy({ wait: true });
-            Backbone.history.navigate('/histories', { trigger: true });
+            Backbone.history.navigate('/backbone/histories', { trigger: true });
         }
     },
 });

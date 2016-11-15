@@ -5,13 +5,13 @@ var HistoriesRootView = require('./views/histories/RootView.js');
 var HistoryRootView   = require('./views/history/RootView.js');
 
 var historiesRouter = {
-    ''                  : 'index',
-    'histories'         : 'index',
-    'histories/new'     : 'newHistory',
-    'histories/:id/edit': 'edit',
+    ''                           : 'index',
+    'backbone/histories'         : 'index',
+    'backbone/histories/new'     : 'newHistory',
+    'backbone/histories/:id/edit': 'edit',
 };
 
-var historiesController = {
+var backboneHistoriesController = {
     index: function() {
         app.getRegion('rootRegion').show(new HistoriesRootView());
     },
@@ -23,9 +23,21 @@ var historiesController = {
     },
 };
 
+var reactHistoriesController = {
+    index: function() {
+
+    },
+    newHistory: function() {
+
+    },
+    edit: function(id) {
+
+    },
+};
+
 var appRouter = Backbone.Marionette.AppRouter.extend({
     appRoutes: historiesRouter,
-    controller: historiesController,
+    controller: Backbone.history.getHash().indexOf('backbone') !== -1 ? backboneHistoriesController : reactHistoriesController,
 });
 
 var app = new Backbone.Marionette.Application({
