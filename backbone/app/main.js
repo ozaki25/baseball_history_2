@@ -1,37 +1,43 @@
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-var HistoriesRootView = require('./views/histories/RootView.js');
-var HistoryRootView   = require('./views/history/RootView.js');
+var BackboneHistoriesRootView = require('./views/histories/RootView.js');
+var BackboneHistoryRootView   = require('./views/history/RootView.js');
+var ReactHistoriesRootView    = require('./react/HistoriesRootView.js');
+var ReactHistoryRootView      = require('./react/HistoryRootView.js');
 
 var historiesRouter = {
     ''                           : 'index',
     'backbone/histories'         : 'index',
     'backbone/histories/new'     : 'newHistory',
     'backbone/histories/:id/edit': 'edit',
+
+    'react/histories'            : 'index',
+    'react/histories/new'        : 'newHistory',
+    'react/histories/:id/edit'   : 'edit',
 };
 
 var backboneHistoriesController = {
     index: function() {
-        app.getRegion('rootRegion').show(new HistoriesRootView());
+        app.getRegion('rootRegion').show(new BackboneHistoriesRootView());
     },
     newHistory: function() {
-        app.getRegion('rootRegion').show(new HistoryRootView());
+        app.getRegion('rootRegion').show(new BackboneHistoryRootView());
     },
     edit: function(id) {
-        app.getRegion('rootRegion').show(new HistoryRootView({ historyId: id }));
+        app.getRegion('rootRegion').show(new BackboneHistoryRootView({ historyId: id }));
     },
 };
 
 var reactHistoriesController = {
     index: function() {
-
+        app.getRegion('rootRegion').show(new ReactHistoriesRootView());
     },
     newHistory: function() {
-
+        app.getRegion('rootRegion').show(new ReactHistoryRootView());
     },
     edit: function(id) {
-
+        app.getRegion('rootRegion').show(new ReactHistoryRootView({ historyId: id }));
     },
 };
 

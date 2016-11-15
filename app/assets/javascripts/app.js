@@ -116,41 +116,47 @@ var SelectboxView = Backbone.Marionette.CollectionView.extend({
 
 module.exports = SelectboxView;
 
-},{"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],5:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":20,"underscore":"underscore"}],5:[function(require,module,exports){
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-var HistoriesRootView = require('./views/histories/RootView.js');
-var HistoryRootView   = require('./views/history/RootView.js');
+var BackboneHistoriesRootView = require('./views/histories/RootView.js');
+var BackboneHistoryRootView   = require('./views/history/RootView.js');
+var ReactHistoriesRootView    = require('./react/HistoriesRootView.js');
+var ReactHistoryRootView      = require('./react/HistoryRootView.js');
 
 var historiesRouter = {
     ''                           : 'index',
     'backbone/histories'         : 'index',
     'backbone/histories/new'     : 'newHistory',
     'backbone/histories/:id/edit': 'edit',
+
+    'react/histories'            : 'index',
+    'react/histories/new'        : 'newHistory',
+    'react/histories/:id/edit'   : 'edit',
 };
 
 var backboneHistoriesController = {
     index: function() {
-        app.getRegion('rootRegion').show(new HistoriesRootView());
+        app.getRegion('rootRegion').show(new BackboneHistoriesRootView());
     },
     newHistory: function() {
-        app.getRegion('rootRegion').show(new HistoryRootView());
+        app.getRegion('rootRegion').show(new BackboneHistoryRootView());
     },
     edit: function(id) {
-        app.getRegion('rootRegion').show(new HistoryRootView({ historyId: id }));
+        app.getRegion('rootRegion').show(new BackboneHistoryRootView({ historyId: id }));
     },
 };
 
 var reactHistoriesController = {
     index: function() {
-
+        app.getRegion('rootRegion').show(new ReactHistoriesRootView());
     },
     newHistory: function() {
-
+        app.getRegion('rootRegion').show(new ReactHistoryRootView());
     },
     edit: function(id) {
-
+        app.getRegion('rootRegion').show(new ReactHistoryRootView({ historyId: id }));
     },
 };
 
@@ -171,7 +177,7 @@ var app = new Backbone.Marionette.Application({
 
 app.start();
 
-},{"./views/histories/RootView.js":13,"./views/history/RootView.js":16,"backbone":"backbone","backbone.marionette":18}],6:[function(require,module,exports){
+},{"./react/HistoriesRootView.js":9,"./react/HistoryRootView.js":10,"./views/histories/RootView.js":15,"./views/history/RootView.js":18,"backbone":"backbone","backbone.marionette":20}],6:[function(require,module,exports){
 var Backbone = require('backbone');
 var moment = require('moment');
 
@@ -213,7 +219,7 @@ module.exports = Backbone.Model.extend({
     },
 });
 
-},{"backbone":"backbone","moment":20}],7:[function(require,module,exports){
+},{"backbone":"backbone","moment":22}],7:[function(require,module,exports){
 var Backbone = require('backbone');
 
 module.exports = Backbone.Model.extend({
@@ -235,6 +241,48 @@ module.exports = Backbone.Model.extend({
 });
 
 },{"backbone":"backbone"}],9:[function(require,module,exports){
+var Backbone = require('backbone');
+
+var Histories  = require('../collections/Histories');
+
+module.exports = Backbone.View.extend({
+    initialize: function(options) {
+        var histories = new Histories();
+        histories.fetch().done(function() {
+            console.log(histories);
+        });
+    },
+});
+
+},{"../collections/Histories":1,"backbone":"backbone"}],10:[function(require,module,exports){
+var _ = require('underscore');
+var Backbone = require('backbone');
+
+var History    = require('../models/History');
+var Histories  = require('../collections/Histories');
+var Teams      = require('../collections/Teams');
+var Locations  = require('../collections/Locations');
+
+module.exports = Backbone.View.extend({
+    initialize: function(options) {
+        var historyId = options && options.historyId;
+        var history   = new History({}, { collection: new Histories() });
+        var teams     = new Teams();
+        var locations = new Locations();
+        if(historyId) history.set({ id: historyId });
+        Backbone.$.when(
+            history.has('id') ? history.fetch() : _.noop(),
+            teams.fetch(),
+            locations.fetch()
+        ).done(function() {
+            console.log(history);
+            console.log(teams);
+            console.log(locations);
+        });
+    },
+});
+
+},{"../collections/Histories":1,"../collections/Locations":2,"../collections/Teams":3,"../models/History":6,"backbone":"backbone","underscore":"underscore"}],11:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -266,7 +314,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ),
 });
 
-},{"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],10:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":20,"underscore":"underscore"}],12:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -282,7 +330,7 @@ module.exports = Backbone.Marionette.CompositeView.extend({
     childViewContainer: '#histories_child_container',
 });
 
-},{"./HistoryView":11,"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],11:[function(require,module,exports){
+},{"./HistoryView":13,"backbone":"backbone","backbone.marionette":20,"underscore":"underscore"}],13:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -321,7 +369,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     },
 });
 
-},{"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],12:[function(require,module,exports){
+},{"backbone":"backbone","backbone.marionette":20,"underscore":"underscore"}],14:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -348,7 +396,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"./HistoriesView":10,"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],13:[function(require,module,exports){
+},{"./HistoriesView":12,"backbone":"backbone","backbone.marionette":20,"underscore":"underscore"}],15:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -380,7 +428,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"../../collections/Histories":1,"../HeaderView":9,"./MainView":12,"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],14:[function(require,module,exports){
+},{"../../collections/Histories":1,"../HeaderView":11,"./MainView":14,"backbone":"backbone","backbone.marionette":20,"underscore":"underscore"}],16:[function(require,module,exports){
 var _ = require('underscore');
 var moment = require('moment');
 var Backbone = require('backbone');
@@ -579,7 +627,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"../../lib/SelectboxView":4,"backbone":"backbone","backbone.marionette":18,"moment":20,"underscore":"underscore"}],15:[function(require,module,exports){
+},{"../../lib/SelectboxView":4,"backbone":"backbone","backbone.marionette":20,"moment":22,"underscore":"underscore"}],17:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -604,7 +652,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"./FormView":14,"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],16:[function(require,module,exports){
+},{"./FormView":16,"backbone":"backbone","backbone.marionette":20,"underscore":"underscore"}],18:[function(require,module,exports){
 var _ = require('underscore');
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
@@ -650,7 +698,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
 });
 
-},{"../../collections/Histories":1,"../../collections/Locations":2,"../../collections/Teams":3,"../../models/History":6,"../HeaderView":9,"./MainView":15,"backbone":"backbone","backbone.marionette":18,"underscore":"underscore"}],17:[function(require,module,exports){
+},{"../../collections/Histories":1,"../../collections/Locations":2,"../../collections/Teams":3,"../../models/History":6,"../HeaderView":11,"./MainView":17,"backbone":"backbone","backbone.marionette":20,"underscore":"underscore"}],19:[function(require,module,exports){
 // Backbone.BabySitter
 // -------------------
 // v0.1.11
@@ -842,7 +890,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],18:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],20:[function(require,module,exports){
 // MarionetteJS (Backbone.Marionette)
 // ----------------------------------
 // v2.4.7
@@ -4356,7 +4404,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
   return Marionette;
 }));
 
-},{"backbone":"backbone","backbone.babysitter":17,"backbone.wreqr":19,"underscore":"underscore"}],19:[function(require,module,exports){
+},{"backbone":"backbone","backbone.babysitter":19,"backbone.wreqr":21,"underscore":"underscore"}],21:[function(require,module,exports){
 // Backbone.Wreqr (Backbone.Marionette)
 // ----------------------------------
 // v1.3.6
@@ -4793,7 +4841,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
 
 }));
 
-},{"backbone":"backbone","underscore":"underscore"}],20:[function(require,module,exports){
+},{"backbone":"backbone","underscore":"underscore"}],22:[function(require,module,exports){
 //! moment.js
 //! version : 2.15.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
