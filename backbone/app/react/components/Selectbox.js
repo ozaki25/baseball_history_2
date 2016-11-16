@@ -8,10 +8,10 @@ class Selectbox extends React.Component {
         this.state = { collection: props.collection }
     }
     render() {
-        const id = this.props.id
+        const ref = this.props._ref
         const className = this.props.className
         return (
-            <select id={id} className={className} >
+            <select ref={ref} className={className} >
               {this.renderOptions()}
             </select>
         )

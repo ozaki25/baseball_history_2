@@ -12,6 +12,24 @@ class HistoryForm extends React.Component {
             locations: props.locations
         }
     }
+    componentDidMount() {
+        const inputDateYear  = this.refs.inputDateYear.getDOMNode()
+        const inputDateMonth = this.refs.inputDateMonth.getDOMNode()
+        const inputDateDay   = this.refs.inputDateDay.getDOMNode()
+        const inputTeam      = this.refs.inputTeam.getDOMNode()
+        const inputResult    = this.refs.inputResult.getDOMNode()
+        const inputStarter   = this.refs.inputStarter.getDOMNode()
+        const inputLocation  = this.refs.inputLocation.getDOMNode()
+        this.setState({
+            inputDateYear: inputDateYear,
+            inputDateMonth: inputDateMonth,
+            inputDateDay: inputDateDay,
+            inputTeam: inputTeam,
+            inputResult: inputResult,
+            inputStarter: inputStarter,
+            inputLocation: inputLocation,
+        })
+    }
     render() {
         const history = this.props.history
         return (
@@ -42,7 +60,7 @@ class HistoryForm extends React.Component {
               <div className="form-group">
                 <label className="col-sm-2 control-label" htmlFor="input_starter">先発</label>
                 <div className="col-sm-10">
-                  <input type="text" className="form-control input-sm" id="input_starter" defaultValue={history.get('starter')} />
+                  <input type="text" className="form-control input-sm" ref="inputStarter" defaultValue={history.get('starter')} />
                 </div>
               </div>
               <div className="form-group">
@@ -53,7 +71,7 @@ class HistoryForm extends React.Component {
               </div>
               <div className="form-group">
                 <div className="col-xs-12 col-sm-offset-2 col-sm-2">
-                  <button type="button" className="btn btn-primary form-control" id="submit_history">{history.isNew() ? '作成' : '更新'}</button>
+                <button type="button" className="btn btn-primary form-control" onClick={this.onSubmit()}>{this.submitBtnLabel()}</button>
                 </div>
               </div>
             </form>
@@ -63,35 +81,35 @@ class HistoryForm extends React.Component {
         const year = moment(new Date()).year()
         const latestTenYears = _.range(year, year - 10, -1)
         const collection = _.map(latestTenYears, (year) => { return { year: year } })
-        const id = 'input_date_year'
         const className =  'form-control input-sm'
+        const ref = 'inputDateYear'
         const value = (model) => model.year
         const label = (model) => model.year
-        return <Selectbox collection={collection} id={id} className={className} value={value} label={label} />
+        return <Selectbox collection={collection} _ref={ref} className={className} value={value} label={label} />
     }
     renderSelectDateMonth() {
         const collection = _.map(_.range(1, 13), (month) => { return { month: month } })
-        const id = 'input_date_month'
         const className =  'form-control input-sm'
+        const ref = 'inputDateMonth'
         const value = (model) => model.month
         const label = (model) => model.month
-        return <Selectbox collection={collection} id={id} className={className} value={value} label={label} />
+        return <Selectbox collection={collection} _ref={ref} className={className} value={value} label={label} />
     }
     renderSelectDateDay() {
         const collection = _.map(_.range(1, 32), (day) => { return { day: day } })
-        const id = 'input_date_year'
         const className =  'form-control input-sm'
+        const ref = 'inputDateYear'
         const value = (model) => model.day
         const label = (model) => model.day
-        return <Selectbox collection={collection} id={id} className={className} value={value} label={label} />
+        return <Selectbox collection={collection} _ref={ref} className={className} value={value} label={label} />
     }
     renderSelectTeam() {
         const collection = this.state.teams.toJSON()
-        const id = 'input_team'
         const className =  'form-control input-sm'
+        const ref = 'inputTeam'
         const value = (model) => model.id
         const label = (model) => model.short_name
-        return <Selectbox collection={collection} id={id} className={className} value={value} label={label} />
+        return <Selectbox collection={collection} _ref={ref} className={className} value={value} label={label} />
     }
     renderSelectResult() {
         const collection = [
@@ -99,19 +117,47 @@ class HistoryForm extends React.Component {
             { label: '負け', value: 'lose' },
             { label: '引き分け', value: 'draw' },
         ]
-        const id = 'input_result'
+        const ref = 'inputResult'
         const className =  'form-control input-sm'
         const value = (model) => model.value
         const label = (model) => model.label
-        return <Selectbox collection={collection} id={id} className={className} value={value} label={label} />
+        return <Selectbox collection={collection} _ref={ref} className={className} value={value} label={label} />
     }
     renderSelectLocation() {
         const collection = this.state.locations.toJSON()
-        const id = 'input_location'
+        const ref = 'inputLocation'
         const className =  'form-control input-sm'
-        const value = (model) => model.id
+        const value = (model) => model.ref
         const label = (model) => model.short_name
-        return <Selectbox collection={collection} id={id} className={className} value={value} label={label} />
+        return <Selectbox collection={collection} _ref={ref} className={className} value={value} label={label} />
+    }
+    onSubmit() {
+        console.log(this.refs)
+        console.log(this.refs.inputStarter)
+        console.log(this.state)
+/*        const inputDateYear  = React.findDOMNode(this.refs.inputDateYear).value
+        const inputDateMonth = React.findDOMNode(this.refs.inputDateMonth).value
+        const inputDateDay   = React.findDOMNode(this.refs.inputDateDay).value
+        const inputDate      = moment([inputDateYear, inputDateMonth - 1, inputDateDay])
+        const inputTeam      = React.findDOMNode(this.refs.inputTeam).value
+        const inputResult    = React.findDOMNode(this.refs.inputResult).value
+        const inputStarter   = React.findDOMNode(this.refs.inputStarter).value
+        const inputLocation  = React.findDOMNode(this.refs.inputLocation).value
+
+        const history = this.state.history
+        history.save({
+            date       : inputDate,
+            team_id    : inputTeam,
+            result     : inputResult,
+            starter    : inputStarter,
+            location_id: inputLocation,
+        }, { wait: true }).done(() => {
+            console.log(history)
+            this.setState({ history: history })
+        })*/
+    }
+    submitBtnLabel() {
+        return this.state.history.isNew() ? '作成' : '更新'
     }
 }
 

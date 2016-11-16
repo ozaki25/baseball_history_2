@@ -507,214 +507,268 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var HistoryForm = function (_React$Component) {
-  _inherits(HistoryForm, _React$Component);
+    _inherits(HistoryForm, _React$Component);
 
-  function HistoryForm(props) {
-    _classCallCheck(this, HistoryForm);
+    function HistoryForm(props) {
+        _classCallCheck(this, HistoryForm);
 
-    var _this = _possibleConstructorReturn(this, (HistoryForm.__proto__ || Object.getPrototypeOf(HistoryForm)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (HistoryForm.__proto__ || Object.getPrototypeOf(HistoryForm)).call(this, props));
 
-    _this.state = {
-      history: props.history,
-      teams: props.teams,
-      locations: props.locations
-    };
-    return _this;
-  }
+        _this.state = {
+            history: props.history,
+            teams: props.teams,
+            locations: props.locations
+        };
+        return _this;
+    }
 
-  _createClass(HistoryForm, [{
-    key: 'render',
-    value: function render() {
-      var history = this.props.history;
-      return _react2.default.createElement(
-        'form',
-        { className: 'form-horizontal' },
-        _react2.default.createElement(
-          'div',
-          { className: 'form-group' },
-          _react2.default.createElement(
-            'label',
-            { className: 'col-sm-2 control-label', htmlFor: 'input_date' },
-            '\u8A66\u5408\u65E5'
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'form-inline col-sm-10' },
-            this.renderSelectDateYear(),
-            '\xA0\u5E74\xA0',
-            this.renderSelectDateMonth(),
-            '\xA0\u6708\xA0',
-            this.renderSelectDateDay(),
-            '\xA0\u65E5\xA0'
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'form-group' },
-          _react2.default.createElement(
-            'label',
-            { className: 'col-sm-2 control-label', htmlFor: 'input_team' },
-            '\u5BFE\u6226\u76F8\u624B'
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-sm-10' },
-            this.renderSelectTeam()
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'form-group' },
-          _react2.default.createElement(
-            'label',
-            { className: 'col-sm-2 control-label', htmlFor: 'input_result' },
-            '\u7D50\u679C'
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-sm-10' },
-            this.renderSelectResult()
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'form-group' },
-          _react2.default.createElement(
-            'label',
-            { className: 'col-sm-2 control-label', htmlFor: 'input_starter' },
-            '\u5148\u767A'
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-sm-10' },
-            _react2.default.createElement('input', { type: 'text', className: 'form-control input-sm', id: 'input_starter', defaultValue: history.get('starter') })
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'form-group' },
-          _react2.default.createElement(
-            'label',
-            { className: 'col-sm-2 control-label', htmlFor: 'input_location' },
-            '\u7403\u5834'
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'col-sm-10' },
-            this.renderSelectLocation()
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'form-group' },
-          _react2.default.createElement(
-            'div',
-            { className: 'col-xs-12 col-sm-offset-2 col-sm-2' },
-            _react2.default.createElement(
-              'button',
-              { type: 'button', className: 'btn btn-primary form-control', id: 'submit_history' },
-              history.isNew() ? '作成' : '更新'
-            )
-          )
-        )
-      );
-    }
-  }, {
-    key: 'renderSelectDateYear',
-    value: function renderSelectDateYear() {
-      var year = (0, _moment2.default)(new Date()).year();
-      var latestTenYears = _underscore2.default.range(year, year - 10, -1);
-      var collection = _underscore2.default.map(latestTenYears, function (year) {
-        return { year: year };
-      });
-      console.log(collection);
-      var id = 'input_date_year';
-      var className = 'form-control input-sm';
-      var value = function value(model) {
-        return model.year;
-      };
-      var label = function label(model) {
-        return model.year;
-      };
-      return _react2.default.createElement(_Selectbox2.default, { collection: collection, id: id, className: className, value: value, label: label });
-    }
-  }, {
-    key: 'renderSelectDateMonth',
-    value: function renderSelectDateMonth() {
-      var collection = _underscore2.default.map(_underscore2.default.range(1, 13), function (month) {
-        return { month: month };
-      });
-      var id = 'input_date_month';
-      var className = 'form-control input-sm';
-      var value = function value(model) {
-        return model.month;
-      };
-      var label = function label(model) {
-        return model.month;
-      };
-      return _react2.default.createElement(_Selectbox2.default, { collection: collection, id: id, className: className, value: value, label: label });
-    }
-  }, {
-    key: 'renderSelectDateDay',
-    value: function renderSelectDateDay() {
-      var collection = _underscore2.default.map(_underscore2.default.range(1, 32), function (day) {
-        return { day: day };
-      });
-      var id = 'input_date_year';
-      var className = 'form-control input-sm';
-      var value = function value(model) {
-        return model.day;
-      };
-      var label = function label(model) {
-        return model.day;
-      };
-      return _react2.default.createElement(_Selectbox2.default, { collection: collection, id: id, className: className, value: value, label: label });
-    }
-  }, {
-    key: 'renderSelectTeam',
-    value: function renderSelectTeam() {
-      var collection = this.state.teams.toJSON();
-      var id = 'input_team';
-      var className = 'form-control input-sm';
-      var value = function value(model) {
-        return model.id;
-      };
-      var label = function label(model) {
-        return model.short_name;
-      };
-      return _react2.default.createElement(_Selectbox2.default, { collection: collection, id: id, className: className, value: value, label: label });
-    }
-  }, {
-    key: 'renderSelectResult',
-    value: function renderSelectResult() {
-      var collection = [{ label: '勝ち', value: 'win' }, { label: '負け', value: 'lose' }, { label: '引き分け', value: 'draw' }];
-      var id = 'input_result';
-      var className = 'form-control input-sm';
-      var value = function value(model) {
-        return model.value;
-      };
-      var label = function label(model) {
-        return model.label;
-      };
-      return _react2.default.createElement(_Selectbox2.default, { collection: collection, id: id, className: className, value: value, label: label });
-    }
-  }, {
-    key: 'renderSelectLocation',
-    value: function renderSelectLocation() {
-      var collection = this.state.locations.toJSON();
-      var id = 'input_location';
-      var className = 'form-control input-sm';
-      var value = function value(model) {
-        return model.id;
-      };
-      var label = function label(model) {
-        return model.short_name;
-      };
-      return _react2.default.createElement(_Selectbox2.default, { collection: collection, id: id, className: className, value: value, label: label });
-    }
-  }]);
+    _createClass(HistoryForm, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            console.log("aaaaaaaaaaaaaaaaaaaaaaaaa");
+            console.log(this);
+            console.log(this.refs);
+            var inputDateYear = this.refs.inputDateYear.getDOMNode();
+            var inputDateMonth = this.refs.inputDateMonth.getDOMNode();
+            var inputDateDay = this.refs.inputDateDay.getDOMNode();
+            var inputTeam = this.refs.inputTeam.getDOMNode();
+            var inputResult = this.refs.inputResult.getDOMNode();
+            var inputStarter = this.refs.inputStarter.getDOMNode();
+            var inputLocation = this.refs.inputLocation.getDOMNode();
+            this.setState({
+                inputDateYear: inputDateYear,
+                inputDateMonth: inputDateMonth,
+                inputDateDay: inputDateDay,
+                inputTeam: inputTeam,
+                inputResult: inputResult,
+                inputStarter: inputStarter,
+                inputLocation: inputLocation
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var history = this.props.history;
+            return _react2.default.createElement(
+                'form',
+                { className: 'form-horizontal' },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    _react2.default.createElement(
+                        'label',
+                        { className: 'col-sm-2 control-label', htmlFor: 'input_date' },
+                        '\u8A66\u5408\u65E5'
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'form-inline col-sm-10' },
+                        this.renderSelectDateYear(),
+                        '\xA0\u5E74\xA0',
+                        this.renderSelectDateMonth(),
+                        '\xA0\u6708\xA0',
+                        this.renderSelectDateDay(),
+                        '\xA0\u65E5\xA0'
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    _react2.default.createElement(
+                        'label',
+                        { className: 'col-sm-2 control-label', htmlFor: 'input_team' },
+                        '\u5BFE\u6226\u76F8\u624B'
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'col-sm-10' },
+                        this.renderSelectTeam()
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    _react2.default.createElement(
+                        'label',
+                        { className: 'col-sm-2 control-label', htmlFor: 'input_result' },
+                        '\u7D50\u679C'
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'col-sm-10' },
+                        this.renderSelectResult()
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    _react2.default.createElement(
+                        'label',
+                        { className: 'col-sm-2 control-label', htmlFor: 'input_starter' },
+                        '\u5148\u767A'
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'col-sm-10' },
+                        _react2.default.createElement('input', { type: 'text', className: 'form-control input-sm', ref: 'inputStarter', defaultValue: history.get('starter') })
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    _react2.default.createElement(
+                        'label',
+                        { className: 'col-sm-2 control-label', htmlFor: 'input_location' },
+                        '\u7403\u5834'
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'col-sm-10' },
+                        this.renderSelectLocation()
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'form-group' },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'col-xs-12 col-sm-offset-2 col-sm-2' },
+                        _react2.default.createElement(
+                            'button',
+                            { type: 'button', className: 'btn btn-primary form-control', onClick: this.onSubmit() },
+                            this.submitBtnLabel()
+                        )
+                    )
+                )
+            );
+        }
+    }, {
+        key: 'renderSelectDateYear',
+        value: function renderSelectDateYear() {
+            var year = (0, _moment2.default)(new Date()).year();
+            var latestTenYears = _underscore2.default.range(year, year - 10, -1);
+            var collection = _underscore2.default.map(latestTenYears, function (year) {
+                return { year: year };
+            });
+            var className = 'form-control input-sm';
+            var ref = 'inputDateYear';
+            var value = function value(model) {
+                return model.year;
+            };
+            var label = function label(model) {
+                return model.year;
+            };
+            return _react2.default.createElement(_Selectbox2.default, { collection: collection, _ref: ref, className: className, value: value, label: label });
+        }
+    }, {
+        key: 'renderSelectDateMonth',
+        value: function renderSelectDateMonth() {
+            var collection = _underscore2.default.map(_underscore2.default.range(1, 13), function (month) {
+                return { month: month };
+            });
+            var className = 'form-control input-sm';
+            var ref = 'inputDateMonth';
+            var value = function value(model) {
+                return model.month;
+            };
+            var label = function label(model) {
+                return model.month;
+            };
+            return _react2.default.createElement(_Selectbox2.default, { collection: collection, _ref: ref, className: className, value: value, label: label });
+        }
+    }, {
+        key: 'renderSelectDateDay',
+        value: function renderSelectDateDay() {
+            var collection = _underscore2.default.map(_underscore2.default.range(1, 32), function (day) {
+                return { day: day };
+            });
+            var className = 'form-control input-sm';
+            var ref = 'inputDateYear';
+            var value = function value(model) {
+                return model.day;
+            };
+            var label = function label(model) {
+                return model.day;
+            };
+            return _react2.default.createElement(_Selectbox2.default, { collection: collection, _ref: ref, className: className, value: value, label: label });
+        }
+    }, {
+        key: 'renderSelectTeam',
+        value: function renderSelectTeam() {
+            var collection = this.state.teams.toJSON();
+            var className = 'form-control input-sm';
+            var ref = 'inputTeam';
+            var value = function value(model) {
+                return model.id;
+            };
+            var label = function label(model) {
+                return model.short_name;
+            };
+            return _react2.default.createElement(_Selectbox2.default, { collection: collection, _ref: ref, className: className, value: value, label: label });
+        }
+    }, {
+        key: 'renderSelectResult',
+        value: function renderSelectResult() {
+            var collection = [{ label: '勝ち', value: 'win' }, { label: '負け', value: 'lose' }, { label: '引き分け', value: 'draw' }];
+            var ref = 'inputResult';
+            var className = 'form-control input-sm';
+            var value = function value(model) {
+                return model.value;
+            };
+            var label = function label(model) {
+                return model.label;
+            };
+            return _react2.default.createElement(_Selectbox2.default, { collection: collection, _ref: ref, className: className, value: value, label: label });
+        }
+    }, {
+        key: 'renderSelectLocation',
+        value: function renderSelectLocation() {
+            var collection = this.state.locations.toJSON();
+            var ref = 'inputLocation';
+            var className = 'form-control input-sm';
+            var value = function value(model) {
+                return model.ref;
+            };
+            var label = function label(model) {
+                return model.short_name;
+            };
+            return _react2.default.createElement(_Selectbox2.default, { collection: collection, _ref: ref, className: className, value: value, label: label });
+        }
+    }, {
+        key: 'onSubmit',
+        value: function onSubmit() {
+            console.log(this.refs);
+            console.log(this.refs.inputStarter);
+            console.log(this.state);
+            /*        const inputDateYear  = React.findDOMNode(this.refs.inputDateYear).value
+                    const inputDateMonth = React.findDOMNode(this.refs.inputDateMonth).value
+                    const inputDateDay   = React.findDOMNode(this.refs.inputDateDay).value
+                    const inputDate      = moment([inputDateYear, inputDateMonth - 1, inputDateDay])
+                    const inputTeam      = React.findDOMNode(this.refs.inputTeam).value
+                    const inputResult    = React.findDOMNode(this.refs.inputResult).value
+                    const inputStarter   = React.findDOMNode(this.refs.inputStarter).value
+                    const inputLocation  = React.findDOMNode(this.refs.inputLocation).value
+            
+                    const history = this.state.history
+                    history.save({
+                        date       : inputDate,
+                        team_id    : inputTeam,
+                        result     : inputResult,
+                        starter    : inputStarter,
+                        location_id: inputLocation,
+                    }, { wait: true }).done(() => {
+                        console.log(history)
+                        this.setState({ history: history })
+                    })*/
+        }
+    }, {
+        key: 'submitBtnLabel',
+        value: function submitBtnLabel() {
+            return this.state.history.isNew() ? '作成' : '更新';
+        }
+    }]);
 
-  return HistoryForm;
+    return HistoryForm;
 }(_react2.default.Component);
 
 module.exports = HistoryForm;
@@ -759,11 +813,11 @@ var Selectbox = function (_React$Component) {
     _createClass(Selectbox, [{
         key: 'render',
         value: function render() {
-            var id = this.props.id;
+            var ref = this.props._ref;
             var className = this.props.className;
             return _react2.default.createElement(
                 'select',
-                { id: id, className: className },
+                { ref: ref, className: className },
                 this.renderOptions()
             );
         }
