@@ -1,10 +1,10 @@
 var Backbone = require('backbone');
 Backbone.Marionette = require('backbone.marionette');
 
-var BackboneHistoriesRootView = require('./views/histories/RootView.js');
-var BackboneHistoryRootView   = require('./views/history/RootView.js');
-var ReactHistoriesRootView    = require('./react/HistoriesRootView.js');
-var ReactHistoryRootView      = require('./react/HistoryRootView.js');
+var BackboneHistoriesRootView = require('./views/histories/RootView');
+var BackboneHistoryRootView   = require('./views/history/RootView');
+var ReactHistoriesRootView    = require('./react/histories/Root');
+var ReactHistoryRootView      = require('./react/history/Root');
 
 var historiesRouter = {
     ''                           : 'index',
