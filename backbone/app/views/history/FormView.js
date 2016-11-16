@@ -85,10 +85,11 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     renderSelectYear: function() {
         var year = moment(new Date()).year();
+        var latestTenYears = _.range(year, year - 10, -1);
         var years = new Backbone.Collection(
-            _.map(_.range(year, year - 10, -1), function(i) {
+            _.map(latestTenYears), function(i) {
                 return { id: i, year: i };
-            })
+            }
         );
         var selectboxView = new SelectboxView({
             _id: 'input_date_year',

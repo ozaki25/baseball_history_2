@@ -1,4 +1,6 @@
 import React from 'react'
+import _ from 'underscore'
+import moment from 'moment'
 import Selectbox from './Selectbox'
 
 class HistoryForm extends React.Component {
@@ -17,14 +19,11 @@ class HistoryForm extends React.Component {
               <div className="form-group">
                 <label className="col-sm-2 control-label" htmlFor="input_date">試合日</label>
                 <div className="form-inline col-sm-10">
+                  {this.renderSelectDateYear()}
                   &nbsp;年&nbsp;
-                  <select className="form-control input-sm">
-                      <option>1</option>
-                  </select>
+                  {this.renderSelectDateMonth()}
                   &nbsp;月&nbsp;
-                  <select className="form-control input-sm">
-                    <option>1</option>
-                  </select>
+                  {this.renderSelectDateDay()}
                   &nbsp;日&nbsp;
                 </div>
               </div>
@@ -37,9 +36,7 @@ class HistoryForm extends React.Component {
               <div className="form-group">
                 <label className="col-sm-2 control-label" htmlFor="input_result">結果</label>
                 <div className="col-sm-10">
-                  <select className="form-control input-sm">
-                    <option>勝ち</option>
-                  </select>
+                  {this.renderSelectResult()}
                 </div>
               </div>
               <div className="form-group">
@@ -51,9 +48,7 @@ class HistoryForm extends React.Component {
               <div className="form-group">
                 <label className="col-sm-2 control-label" htmlFor="input_location">球場</label>
                 <div className="col-sm-10">
-                  <select className="form-control input-sm">
-                    <option>札幌ドーム</option>
-                  </select>
+                  {this.renderSelectLocation()}
                 </div>
               </div>
               <div className="form-group">
@@ -64,9 +59,55 @@ class HistoryForm extends React.Component {
             </form>
         )
     }
+    renderSelectDateYear() {
+        const year = moment(new Date()).year()
+        const latestTenYears = _.range(year, year - 10, -1)
+        const collection = _.map(latestTenYears, (year) => { return { year: year } })
+        const id = 'input_date_year'
+        const className =  'form-control input-sm'
+        const value = (model) => model.year
+        const label = (model) => model.year
+        return <Selectbox collection={collection} id={id} className={className} value={value} label={label} />
+    }
+    renderSelectDateMonth() {
+        const collection = _.map(_.range(1, 13), (month) => { return { month: month } })
+        const id = 'input_date_month'
+        const className =  'form-control input-sm'
+        const value = (model) => model.month
+        const label = (model) => model.month
+        return <Selectbox collection={collection} id={id} className={className} value={value} label={label} />
+    }
+    renderSelectDateDay() {
+        const collection = _.map(_.range(1, 32), (day) => { return { day: day } })
+        const id = 'input_date_year'
+        const className =  'form-control input-sm'
+        const value = (model) => model.day
+        const label = (model) => model.day
+        return <Selectbox collection={collection} id={id} className={className} value={value} label={label} />
+    }
     renderSelectTeam() {
         const collection = this.state.teams.toJSON()
         const id = 'input_team'
+        const className =  'form-control input-sm'
+        const value = (model) => model.id
+        const label = (model) => model.short_name
+        return <Selectbox collection={collection} id={id} className={className} value={value} label={label} />
+    }
+    renderSelectResult() {
+        const collection = [
+            { label: '勝ち', value: 'win' },
+            { label: '負け', value: 'lose' },
+            { label: '引き分け', value: 'draw' },
+        ]
+        const id = 'input_result'
+        const className =  'form-control input-sm'
+        const value = (model) => model.value
+        const label = (model) => model.label
+        return <Selectbox collection={collection} id={id} className={className} value={value} label={label} />
+    }
+    renderSelectLocation() {
+        const collection = this.state.locations.toJSON()
+        const id = 'input_location'
         const className =  'form-control input-sm'
         const value = (model) => model.id
         const label = (model) => model.short_name

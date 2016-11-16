@@ -486,6 +486,14 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _underscore = require('underscore');
+
+var _underscore2 = _interopRequireDefault(_underscore);
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
 var _Selectbox = require('./Selectbox');
 
 var _Selectbox2 = _interopRequireDefault(_Selectbox);
@@ -532,26 +540,11 @@ var HistoryForm = function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'form-inline col-sm-10' },
+            this.renderSelectDateYear(),
             '\xA0\u5E74\xA0',
-            _react2.default.createElement(
-              'select',
-              { className: 'form-control input-sm' },
-              _react2.default.createElement(
-                'option',
-                null,
-                '1'
-              )
-            ),
+            this.renderSelectDateMonth(),
             '\xA0\u6708\xA0',
-            _react2.default.createElement(
-              'select',
-              { className: 'form-control input-sm' },
-              _react2.default.createElement(
-                'option',
-                null,
-                '1'
-              )
-            ),
+            this.renderSelectDateDay(),
             '\xA0\u65E5\xA0'
           )
         ),
@@ -566,16 +559,7 @@ var HistoryForm = function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'col-sm-10' },
-            this.renderSelectTeam(),
-            _react2.default.createElement(
-              'select',
-              { className: 'form-control input-sm' },
-              _react2.default.createElement(
-                'option',
-                null,
-                '\u65E5\u672C\u30CF\u30E0'
-              )
-            )
+            this.renderSelectTeam()
           )
         ),
         _react2.default.createElement(
@@ -589,15 +573,7 @@ var HistoryForm = function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'col-sm-10' },
-            _react2.default.createElement(
-              'select',
-              { className: 'form-control input-sm' },
-              _react2.default.createElement(
-                'option',
-                null,
-                '\u52DD\u3061'
-              )
-            )
+            this.renderSelectResult()
           )
         ),
         _react2.default.createElement(
@@ -625,15 +601,7 @@ var HistoryForm = function (_React$Component) {
           _react2.default.createElement(
             'div',
             { className: 'col-sm-10' },
-            _react2.default.createElement(
-              'select',
-              { className: 'form-control input-sm' },
-              _react2.default.createElement(
-                'option',
-                null,
-                '\u672D\u5E4C\u30C9\u30FC\u30E0'
-              )
-            )
+            this.renderSelectLocation()
           )
         ),
         _react2.default.createElement(
@@ -652,10 +620,89 @@ var HistoryForm = function (_React$Component) {
       );
     }
   }, {
+    key: 'renderSelectDateYear',
+    value: function renderSelectDateYear() {
+      var year = (0, _moment2.default)(new Date()).year();
+      var latestTenYears = _underscore2.default.range(year, year - 10, -1);
+      var collection = _underscore2.default.map(latestTenYears, function (year) {
+        return { year: year };
+      });
+      console.log(collection);
+      var id = 'input_date_year';
+      var className = 'form-control input-sm';
+      var value = function value(model) {
+        return model.year;
+      };
+      var label = function label(model) {
+        return model.year;
+      };
+      return _react2.default.createElement(_Selectbox2.default, { collection: collection, id: id, className: className, value: value, label: label });
+    }
+  }, {
+    key: 'renderSelectDateMonth',
+    value: function renderSelectDateMonth() {
+      var collection = _underscore2.default.map(_underscore2.default.range(1, 13), function (month) {
+        return { month: month };
+      });
+      var id = 'input_date_month';
+      var className = 'form-control input-sm';
+      var value = function value(model) {
+        return model.month;
+      };
+      var label = function label(model) {
+        return model.month;
+      };
+      return _react2.default.createElement(_Selectbox2.default, { collection: collection, id: id, className: className, value: value, label: label });
+    }
+  }, {
+    key: 'renderSelectDateDay',
+    value: function renderSelectDateDay() {
+      var collection = _underscore2.default.map(_underscore2.default.range(1, 32), function (day) {
+        return { day: day };
+      });
+      var id = 'input_date_year';
+      var className = 'form-control input-sm';
+      var value = function value(model) {
+        return model.day;
+      };
+      var label = function label(model) {
+        return model.day;
+      };
+      return _react2.default.createElement(_Selectbox2.default, { collection: collection, id: id, className: className, value: value, label: label });
+    }
+  }, {
     key: 'renderSelectTeam',
     value: function renderSelectTeam() {
       var collection = this.state.teams.toJSON();
       var id = 'input_team';
+      var className = 'form-control input-sm';
+      var value = function value(model) {
+        return model.id;
+      };
+      var label = function label(model) {
+        return model.short_name;
+      };
+      return _react2.default.createElement(_Selectbox2.default, { collection: collection, id: id, className: className, value: value, label: label });
+    }
+  }, {
+    key: 'renderSelectResult',
+    value: function renderSelectResult() {
+      var collection = [{ label: '勝ち', value: 'win' }, { label: '負け', value: 'lose' }, { label: '引き分け', value: 'draw' }];
+      var id = 'input_result';
+      var className = 'form-control input-sm';
+      var value = function value(model) {
+        return model.value;
+      };
+      var label = function label(model) {
+        return model.label;
+      };
+      return _react2.default.createElement(_Selectbox2.default, { collection: collection, id: id, className: className, value: value, label: label });
+    }
+  }, {
+    key: 'renderSelectLocation',
+    value: function renderSelectLocation() {
+      var collection = this.state.locations.toJSON();
+      var id = 'input_location';
       var className = 'form-control input-sm';
       var value = function value(model) {
         return model.id;
@@ -672,7 +719,7 @@ var HistoryForm = function (_React$Component) {
 
 module.exports = HistoryForm;
 
-},{"./Selectbox":13,"react":203}],13:[function(require,module,exports){
+},{"./Selectbox":13,"moment":57,"react":203,"underscore":204}],13:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -725,8 +772,8 @@ var Selectbox = function (_React$Component) {
         value: function renderOptions() {
             var _this2 = this;
 
-            return _underscore2.default.map(this.state.collection, function (model) {
-                return _react2.default.createElement(_SelectboxOption2.default, { valie: _this2.props.value(model), label: _this2.props.label(model) });
+            return _underscore2.default.map(this.state.collection, function (model, i) {
+                return _react2.default.createElement(_SelectboxOption2.default, { key: i, value: _this2.props.value(model), label: _this2.props.label(model) });
             });
         }
     }]);
@@ -1121,9 +1168,10 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     },
     renderSelectYear: function renderSelectYear() {
         var year = moment(new Date()).year();
-        var years = new Backbone.Collection(_.map(_.range(year, year - 10, -1), function (i) {
+        var latestTenYears = _.range(year, year - 10, -1);
+        var years = new Backbone.Collection(_.map(latestTenYears), function (i) {
             return { id: i, year: i };
-        }));
+        });
         var selectboxView = new SelectboxView({
             _id: 'input_date_year',
             _className: 'form-control input-sm',

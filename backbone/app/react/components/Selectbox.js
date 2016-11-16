@@ -17,8 +17,8 @@ class Selectbox extends React.Component {
         )
     }
     renderOptions() {
-        return _.map(this.state.collection, (model) => {
-            return <SelectboxOption valie={this.props.value(model)} label={this.props.label(model)} />
+        return _.map(this.state.collection, (model, i) => {
+            return <SelectboxOption key={i} value={this.props.value(model)} label={this.props.label(model)} />
         })
     }
 }

@@ -317,8 +317,5 @@ DEPENDENCIES
   web-console (~> 2.0)
   zurui-sass-rails
 
-RUBY VERSION
-   ruby 2.2.1p85
-
 BUNDLED WITH
    1.13.5
