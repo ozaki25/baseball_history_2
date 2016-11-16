@@ -21,7 +21,7 @@ module.exports = Backbone.View.extend({
             teams.fetch(),
             locations.fetch()
         ).done(function() {
-            var view = <Main history={ history } teams={ teams } locations={ locations } />
+            var view = <Main history={history} teams={teams} locations={locations} />
             ReactDOM.render(view, document.getElementById('root_region'));
         });
     },

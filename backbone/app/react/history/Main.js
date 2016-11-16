@@ -1,20 +1,23 @@
 import React from 'react'
 import Header from '../components/Header'
+import HistoryForm from '../components/HistoryForm'
 
 class Main extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            history: props.history,
+            teams: props.teams,
+            locations: props.locations
+        }
+    }
     render() {
-        const history = this.props.history
-        const teams = this.props.teams
-        const locations = this.props.locations
-        console.log(history)
-        console.log(teams)
-        console.log(locations)
         return (
             <div>
-                <Header />
-                <div className="container">
-                    <h1>ReactSample</h1>
-                </div>
+              <Header />
+              <div className="container">
+                <HistoryForm history={this.state.history} teams={this.state.teams} locations={this.state.locations} />
+              </div>
             </div>
         )
     }

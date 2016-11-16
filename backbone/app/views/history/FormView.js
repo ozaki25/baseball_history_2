@@ -10,7 +10,7 @@ module.exports = Backbone.Marionette.LayoutView.extend({
     template: _.template(
         '<%= deleteBtn  %>' +
         '<div class="form-group">' +
-          '<label class="col-sm-2 control-label" for="input_date">Date</label>'+
+          '<label class="col-sm-2 control-label" for="input_date">試合日</label>'+
           '<div class="form-inline col-sm-10">' +
             '<span id="select_date_year_region" class"form-group"></span>' +
             '&nbsp;年&nbsp;' +
@@ -21,26 +21,26 @@ module.exports = Backbone.Marionette.LayoutView.extend({
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
-          '<label class="col-sm-2 control-label" for="input_team">Team</label>'+
+          '<label class="col-sm-2 control-label" for="input_team">対戦相手</label>'+
           '<div id="select_team_region" class="col-sm-10"></div>' +
         '</div>' +
         '<div class="form-group">' +
-          '<label class="col-sm-2 control-label" for="input_result">Result</label>'+
+          '<label class="col-sm-2 control-label" for="input_result">結果</label>'+
           '<div id="select_result_region" class="col-sm-10"></div>' +
         '</div>' +
         '<div class="form-group">' +
-          '<label class="col-sm-2 control-label" for="input_starter">Starter</label>'+
+          '<label class="col-sm-2 control-label" for="input_starter">先発</label>'+
           '<div class="col-sm-10">' +
             '<input type="text" class="form-control input-sm" id="input_starter" value="<%- starter %>" />' +
           '</div>' +
         '</div>' +
         '<div class="form-group">' +
-          '<label class="col-sm-2 control-label" for="input_location">Location</label>'+
+          '<label class="col-sm-2 control-label" for="input_location">球場</label>'+
           '<div id="select_location_region" class="col-sm-10"></div>' +
         '</div>' +
         '<div class="form-group">' +
           '<div class="col-xs-12 col-sm-offset-2 col-sm-2">'+
-            '<button type="button" class="btn btn-primary form-control" id="submit_history">Submit</button>' +
+            '<button type="button" class="btn btn-primary form-control" id="submit_history">作成</button>' +
           '</div>' +
         '</div>'
     ),

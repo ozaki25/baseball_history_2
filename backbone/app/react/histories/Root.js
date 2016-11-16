@@ -9,7 +9,7 @@ module.exports = Backbone.View.extend({
     initialize: function(options) {
         var histories = new Histories();
         histories.fetch().done(function() {
-            var view = <Main histories={ histories } />
+            var view = <Main histories={histories} />
             ReactDOM.render(view, document.getElementById('root_region'));
         });
     },

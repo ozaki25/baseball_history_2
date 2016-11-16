@@ -14,7 +14,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     ),
     templateHelpers: function() {
         return {
-            resultAndTeam: this.model.resultMark() + ' ' + this.model.shortTeamName(),
+            resultAndTeam: this.model.resultAndTeam(),
             locationName: this.model.shortLocationName(),
         }
     },
@@ -28,7 +28,7 @@ module.exports = Backbone.Marionette.ItemView.extend({
     },
     onClickDetailLink: function(e) {
         e.preventDefault();
-        open(this.model.getDetailUrl(), '_blank');
+        open(this.model.detailUrl(), '_blank');
     },
     onClickEditIcon: function(e) {
         e.preventDefault();
