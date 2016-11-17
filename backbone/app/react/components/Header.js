@@ -24,16 +24,17 @@ class Header extends React.Component {
                   </ul>
                   <ul className="nav navbar-nav navbar-right">
                     <li>
-                      <a href="/#react/histories">Index</a>
-                    </li>
-                    <li>
-                      <a href="/#react/histories/new">New</a>
+                      <a href="#" onClick={this.onClickNew.bind(this)}>New</a>
                     </li>
                   </ul>
                 </div>
               </div>
             </nav>
         )
+    }
+    onClickNew(e) {
+        e.preventDefault()
+        
     }
 }
 
