@@ -515,26 +515,30 @@ var HistoryForm = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (HistoryForm.__proto__ || Object.getPrototypeOf(HistoryForm)).call(this, props));
 
         var history = props.history;
-        var date = (0, _moment2.default)(new Date(history.get('date')) || new Date());
+        var tmpDate = new Date(history.get('date'));
+        var date = tmpDate.toString() === 'Invalid Date' ? (0, _moment2.default)() : (0, _moment2.default)(tmpDate);
+        var results = [{ label: '勝ち', value: 'win' }, { label: '負け', value: 'lose' }, { label: '引き分け', value: 'draw' }];
         _this.state = {
             history: history,
             teams: props.teams,
             locations: props.locations,
+            results: results,
             inputDateYear: date.year(),
             inputDateMonth: date.month() + 1,
             inputDateDay: date.date(),
             inputTeam: history.get('team_id') || props.teams.first().id,
-            inputResult: history.get('result'),
+            inputResult: history.get('result') || (0, _underscore2.default)(results).first().value,
             inputStarter: history.get('starter'),
             inputLocation: history.get('location_id') || props.locations.first().id
         };
-        console.log(_this.state);
         return _this;
     }
 
     _createClass(HistoryForm, [{
         key: 'render',
         value: function render() {
+            var _this2 = this;
+
             var history = this.props.history;
             return _react2.default.createElement(
                 'form',
@@ -597,7 +601,9 @@ var HistoryForm = function (_React$Component) {
                     _react2.default.createElement(
                         'div',
                         { className: 'col-sm-10' },
-                        _react2.default.createElement('input', { type: 'text', className: 'form-control input-sm', value: this.state.starter, defaultValue: history.get('starter') })
+                        _react2.default.createElement('input', { type: 'text', className: 'form-control input-sm', defaultValue: this.state.inputStarter, onChange: function onChange(e) {
+                                return _this2.setState({ inputStarter: e.target.value });
+                            } })
                     )
                 ),
                 _react2.default.createElement(
@@ -632,7 +638,7 @@ var HistoryForm = function (_React$Component) {
     }, {
         key: 'renderSelectDateYear',
         value: function renderSelectDateYear() {
-            var _this2 = this;
+            var _this3 = this;
 
             var year = (0, _moment2.default)(new Date()).year();
             var latestTenYears = _underscore2.default.range(year, year - 10, -1);
@@ -648,14 +654,14 @@ var HistoryForm = function (_React$Component) {
                 return model.year;
             };
             var onChange = function onChange(e) {
-                return _this2.setState({ inputDateYear: e.target.value });
+                return _this3.setState({ inputDateYear: e.target.value });
             };
             return _react2.default.createElement(_Selectbox2.default, { collection: collection, className: className, selected: selected, value: value, label: label, onChange: onChange });
         }
     }, {
         key: 'renderSelectDateMonth',
         value: function renderSelectDateMonth() {
-            var _this3 = this;
+            var _this4 = this;
 
             var collection = _underscore2.default.map(_underscore2.default.range(1, 13), function (month) {
                 return { month: month };
@@ -669,14 +675,14 @@ var HistoryForm = function (_React$Component) {
                 return model.month;
             };
             var onChange = function onChange(e) {
-                return _this3.setState({ inputDateMonth: e.target.value });
+                return _this4.setState({ inputDateMonth: e.target.value });
             };
             return _react2.default.createElement(_Selectbox2.default, { collection: collection, className: className, selected: selected, value: value, label: label, onChange: onChange });
         }
     }, {
         key: 'renderSelectDateDay',
         value: function renderSelectDateDay() {
-            var _this4 = this;
+            var _this5 = this;
 
             var collection = _underscore2.default.map(_underscore2.default.range(1, 32), function (day) {
                 return { day: day };
@@ -690,14 +696,14 @@ var HistoryForm = function (_React$Component) {
                 return model.day;
             };
             var onChange = function onChange(e) {
-                return _this4.setState({ inputDateDay: e.target.value });
+                return _this5.setState({ inputDateDay: e.target.value });
             };
             return _react2.default.createElement(_Selectbox2.default, { collection: collection, className: className, selected: selected, value: value, label: label, onChange: onChange });
         }
     }, {
         key: 'renderSelectTeam',
         value: function renderSelectTeam() {
-            var _this5 = this;
+            var _this6 = this;
 
             var collection = this.state.teams.toJSON();
             var className = 'form-control input-sm';
@@ -709,16 +715,16 @@ var HistoryForm = function (_React$Component) {
                 return model.short_name;
             };
             var onChange = function onChange(e) {
-                return _this5.setState({ inputTeam: e.target.value });
+                return _this6.setState({ inputTeam: e.target.value });
             };
             return _react2.default.createElement(_Selectbox2.default, { collection: collection, className: className, selected: selected, value: value, label: label, onChange: onChange });
         }
     }, {
         key: 'renderSelectResult',
         value: function renderSelectResult() {
-            var _this6 = this;
+            var _this7 = this;
 
-            var collection = [{ label: '勝ち', value: 'win' }, { label: '負け', value: 'lose' }, { label: '引き分け', value: 'draw' }];
+            var collection = this.state.results;
             var className = 'form-control input-sm';
             var selected = this.state.inputResult;
             var value = function value(model) {
@@ -728,14 +734,14 @@ var HistoryForm = function (_React$Component) {
                 return model.label;
             };
             var onChange = function onChange(e) {
-                return _this6.setState({ inputResult: e.target.value });
+                return _this7.setState({ inputResult: e.target.value });
             };
             return _react2.default.createElement(_Selectbox2.default, { collection: collection, className: className, selected: selected, value: value, label: label, onChange: onChange });
         }
     }, {
         key: 'renderSelectLocation',
         value: function renderSelectLocation() {
-            var _this7 = this;
+            var _this8 = this;
 
             var collection = this.state.locations.toJSON();
             var className = 'form-control input-sm';
@@ -747,15 +753,13 @@ var HistoryForm = function (_React$Component) {
                 return model.short_name;
             };
             var onChange = function onChange(e) {
-                return _this7.setState({ inputLocation: e.target.value });
+                return _this8.setState({ inputLocation: e.target.value });
             };
             return _react2.default.createElement(_Selectbox2.default, { collection: collection, className: className, selected: selected, value: value, label: label, onChange: onChange });
         }
     }, {
         key: 'onSubmit',
         value: function onSubmit() {
-            var _this8 = this;
-
             var history = this.state.history;
             var inputDate = (0, _moment2.default)([this.state.inputDateYear, this.state.inputDateMonth - 1, this.state.inputDateDay]);
             history.save({
@@ -765,7 +769,7 @@ var HistoryForm = function (_React$Component) {
                 starter: this.state.inputStarter,
                 location_id: this.state.inputLocation
             }, { wait: true }).done(function () {
-                _this8.setState({ history: history });
+                location.href = location.origin + '/#react/histories';
             });
         }
     }, {

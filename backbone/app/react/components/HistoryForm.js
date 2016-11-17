@@ -7,16 +7,23 @@ class HistoryForm extends React.Component {
     constructor(props) {
         super(props)
         const history = props.history
-        const date = moment(new Date(history.get('date')) || new Date())
+        const tmpDate = new Date(history.get('date'))
+        const date = tmpDate.toString() === 'Invalid Date' ? moment() : moment(tmpDate)
+        const results = [
+            { label: '勝ち', value: 'win' },
+            { label: '負け', value: 'lose' },
+            { label: '引き分け', value: 'draw' },
+        ]
         this.state = {
             history: history,
             teams: props.teams,
             locations: props.locations,
+            results: results,
             inputDateYear: date.year(),
             inputDateMonth: date.month() + 1,
             inputDateDay: date.date(),
             inputTeam: history.get('team_id') || props.teams.first().id,
-            inputResult: history.get('result'),
+            inputResult: history.get('result') || _(results).first().value,
             inputStarter: history.get('starter'),
             inputLocation: history.get('location_id') || props.locations.first().id,
         }
@@ -51,7 +58,7 @@ class HistoryForm extends React.Component {
               <div className="form-group">
                 <label className="col-sm-2 control-label">先発</label>
                 <div className="col-sm-10">
-                  <input type="text" className="form-control input-sm" value={this.state.starter} defaultValue={history.get('starter')} />
+                  <input type="text" className="form-control input-sm" defaultValue={this.state.inputStarter} onChange={(e) => this.setState({ inputStarter: e.target.value })} />
                 </div>
               </div>
               <div className="form-group">
@@ -107,11 +114,7 @@ class HistoryForm extends React.Component {
         return <Selectbox collection={collection} className={className} selected={selected} value={value} label={label} onChange={onChange} />
     }
     renderSelectResult() {
-        const collection = [
-            { label: '勝ち', value: 'win' },
-            { label: '負け', value: 'lose' },
-            { label: '引き分け', value: 'draw' },
-        ]
+        const collection = this.state.results
         const className =  'form-control input-sm'
         const selected = this.state.inputResult
         const value = (model) => model.value
@@ -138,7 +141,7 @@ class HistoryForm extends React.Component {
             starter    : this.state.inputStarter,
             location_id: this.state.inputLocation,
         }, { wait: true }).done(() => {
-            this.setState({ history: history })
+            location.href = `${location.origin}/#react/histories`
         })
     }
     submitBtnLabel() {
