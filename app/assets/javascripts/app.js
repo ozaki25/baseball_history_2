@@ -437,64 +437,79 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var HistoriesTableRow = function (_React$Component) {
-  _inherits(HistoriesTableRow, _React$Component);
+    _inherits(HistoriesTableRow, _React$Component);
 
-  function HistoriesTableRow() {
-    _classCallCheck(this, HistoriesTableRow);
+    function HistoriesTableRow(props) {
+        _classCallCheck(this, HistoriesTableRow);
 
-    return _possibleConstructorReturn(this, (HistoriesTableRow.__proto__ || Object.getPrototypeOf(HistoriesTableRow)).apply(this, arguments));
-  }
+        var _this = _possibleConstructorReturn(this, (HistoriesTableRow.__proto__ || Object.getPrototypeOf(HistoriesTableRow)).call(this, props));
 
-  _createClass(HistoriesTableRow, [{
-    key: 'render',
-    value: function render() {
-      var history = this.props.history;
-      return _react2.default.createElement(
-        'tr',
-        null,
-        _react2.default.createElement(
-          'td',
-          null,
-          history.get('date')
-        ),
-        _react2.default.createElement(
-          'td',
-          null,
-          history.resultAndTeam()
-        ),
-        _react2.default.createElement(
-          'td',
-          null,
-          history.get('starter')
-        ),
-        _react2.default.createElement(
-          'td',
-          null,
-          history.shortLocationName()
-        ),
-        _react2.default.createElement(
-          'td',
-          null,
-          _react2.default.createElement(
-            'a',
-            { href: history.detailUrl() },
-            '\u8A73\u7D30'
-          )
-        ),
-        _react2.default.createElement(
-          'td',
-          null,
-          _react2.default.createElement(
-            'button',
-            { className: 'btn btn-default btn-xs' },
-            _react2.default.createElement('i', { className: 'fa fa-wrench control-history' })
-          )
-        )
-      );
+        _this.state = { history: props.history };
+        return _this;
     }
-  }]);
 
-  return HistoriesTableRow;
+    _createClass(HistoriesTableRow, [{
+        key: 'render',
+        value: function render() {
+            var history = this.state.history;
+            return _react2.default.createElement(
+                'tr',
+                null,
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    history.get('date')
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    history.resultAndTeam()
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    history.get('starter')
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    history.shortLocationName()
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    _react2.default.createElement(
+                        'a',
+                        { href: history.detailUrl(), onClick: this.onClickDetailLink.bind(this) },
+                        '\u8A73\u7D30'
+                    )
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    _react2.default.createElement(
+                        'button',
+                        { className: 'btn btn-default btn-xs' },
+                        _react2.default.createElement('i', { className: 'fa fa-wrench control-history', onClick: this.onClickEditIcon.bind(this) })
+                    )
+                )
+            );
+        }
+    }, {
+        key: 'onClickDetailLink',
+        value: function onClickDetailLink(e) {
+            e.preventDefault();
+            open(this.state.history.detailUrl(), '_blank');
+        }
+    }, {
+        key: 'onClickEditIcon',
+        value: function onClickEditIcon(e) {
+            e.preventDefault();
+            location.href = location.origin + '/#react/histories/' + this.state.history.id + '/edit';
+        }
+    }]);
+
+    return HistoriesTableRow;
 }(_react2.default.Component);
 
 module.exports = HistoriesTableRow;
