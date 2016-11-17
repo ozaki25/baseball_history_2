@@ -14,6 +14,14 @@ class Header extends React.Component {
                   <a href="#" className="navbar-brand">Baseball History</a>
                 </div>
                 <div className="collapse navbar-collapse" id="navbar_links">
+                  <ul className="nav navbar-nav">
+                    <li>
+                      <a href="/#backbone/histories">Backbone</a>
+                    </li>
+                    <li>
+                      <a href="/#react/histories">React</a>
+                    </li>
+                  </ul>
                   <ul className="nav navbar-nav navbar-right">
                     <li>
                       <a href="/#react/histories">Index</a>
